@@ -19,7 +19,7 @@ public class ClientTest {
 
 	@Test
 	public void testComponent() {
-		component.doSomething();
+		component.serialize(null);
 	}
 
 }

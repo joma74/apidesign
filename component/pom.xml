@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
   <modules>
-    <module>api</module>
+    <module>top-level-api</module>
     <module>impl-one</module>
     <module>impl-two</module>
   </modules>
