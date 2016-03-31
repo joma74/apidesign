@@ -17,5 +17,6 @@
     <module>l2-client-api</module>
     <module>impl-one</module>
     <module>impl-two</module>
+    <module>l2-provider-api</module>
   </modules>
 </project>

@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>at.joma.apidesign</groupId>
-			<artifactId>top-level-api</artifactId>
+			<artifactId>l1-client-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
