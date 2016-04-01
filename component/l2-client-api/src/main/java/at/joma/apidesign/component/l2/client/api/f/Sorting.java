@@ -5,18 +5,27 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
+import javax.enterprise.util.Nonbinding;
 
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
 
-@Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.TYPE, ElementType.METHOD })
+@Target({
+    ElementType.FIELD,
+    ElementType.TYPE,
+    ElementType.METHOD
+})
 public @interface Sorting {
-	
-	SortingOrder order() default SortingOrder.ALPHABETICALLY;
-	
-	SortingDirection direction() default SortingDirection.ASC;
+
+    public static final String ORDER_METHODNAME = "order";
+    public static final String DIRECTION_METHODNAME = "direction";
+
+    @Nonbinding
+    SortingOrder order() default SortingOrder.ALPHABETICALLY;
+
+
+    @Nonbinding
+    SortingDirection direction() default SortingDirection.ASC;
 
 }

@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>at.joma.apidesign</groupId>
-			<artifactId>impl-one</artifactId>
+			<artifactId>l2-provider-impl-one</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

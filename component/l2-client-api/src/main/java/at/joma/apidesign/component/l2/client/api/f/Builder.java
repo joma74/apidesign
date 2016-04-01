@@ -1,13 +1,22 @@
 package at.joma.apidesign.component.l2.client.api.f;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
 
 import at.joma.apidesign.component.l2.client.api.IL2Component;
-import at.joma.apidesign.component.l2.client.api.IL2Component.OmittingQualifier;
+import at.joma.apidesign.component.l2.client.api.IL2Component.OmittingAnnotation;
+import at.joma.apidesign.component.l2.client.api.IL2Component.SortingAnnotation;
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
 
-public class Builder implements ISortingBuilder, IOmittingBuilder {
+public class Builder implements ISortingBuilder, IOmittingBuilder, IProviderTypeBuilder {
 
     private SortingOrder sortingOrder = SortingOrder.ALPHABETICALLY;
 
@@ -15,24 +24,38 @@ public class Builder implements ISortingBuilder, IOmittingBuilder {
 
     private String[] globalFields = new String[]{};
 
+    @Inject
+    private ABC abc;
+
+    private AnnotationLiteral providerType = null;
+
     @Override
-    public Builder with(SortingDirection direction) {
-        return null;
+    public Builder with(SortingDirection sortingDirection) {
+        this.sortingDirection = sortingDirection;
+        return this;
     }
 
     @Override
-    public Builder with(SortingOrder order) {
-        return null;
+    public Builder with(SortingOrder sortingOrder) {
+        this.sortingOrder = sortingOrder;
+        return this;
     }
 
     @Override
     public Builder with(String[] globalFields) {
-        return null;
+        this.globalFields = globalFields;
+        return this;
+    }
+
+    @Override
+    public Builder with(AnnotationLiteral providerType) {
+        this.providerType = providerType;
+        return this;
     }
 
     public IL2Component build() {
-        
-        SortingQualifier sortingQualifier = new SortingQualifier() {
+
+        SortingAnnotation sortingAnnotation = new SortingAnnotation() {
 
             private static final long serialVersionUID = 3395353165326173089L;
 
@@ -46,8 +69,8 @@ public class Builder implements ISortingBuilder, IOmittingBuilder {
                 return Builder.this.sortingDirection;
             }
         };
-        
-        OmittingQualifier omittingQualifier = new OmittingQualifier() {
+
+        OmittingAnnotation omittingAnnotation = new OmittingAnnotation() {
 
             private static final long serialVersionUID = -1139593265279393709L;
 
@@ -57,8 +80,20 @@ public class Builder implements ISortingBuilder, IOmittingBuilder {
             }
         };
 
-        IL2Component returnValue = CDI.current().select(IL2Component.class, sortingQualifier, omittingQualifier).get(); //NOSONAR justification: returnValue for debugging
+        final BeanManager manager = CDI.current().getBeanManager();
 
-        return returnValue;
+        Instance<IL2Component> inst = CDI.current().select(IL2Component.class, providerType);
+
+        IL2Component beanInstance = inst.get();
+
+        return beanInstance;
+    }
+
+    public class IL2ComponentInjectionProxy {
+
+        @Omitting
+        @Sorting
+        @Inject
+        public IL2Component instance;
     }
 }
