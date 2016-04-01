@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.XMLConstants;
-
 import org.apache.commons.collections4.ListUtils;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
@@ -70,10 +68,10 @@ public class ClientOnBuilderTest {
 		Assert.assertNotNull(bean);
 
 		LOG.info(bean.printConfigurationOptions());
-		
+
 		Assert.assertTrue(ListUtils.isEqualList(configuredOptions, Arrays.asList(bean.getConfiguration())));
 	}
-	
+
 	@Test
 	public void testComponent_With_Default_OnBuilder() throws InstantiationException, IllegalAccessException {
 
@@ -97,7 +95,7 @@ public class ClientOnBuilderTest {
 		Assert.assertNotNull(bean);
 
 		LOG.info(bean.printConfigurationOptions());
-		
+
 		Assert.assertTrue(ListUtils.isEqualList(configuredOptions, Arrays.asList(bean.getConfiguration())));
 	}
 

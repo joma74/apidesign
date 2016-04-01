@@ -1,8 +1,6 @@
 package at.joma.apidesign.component.l2.provider.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.inject.Produces;
@@ -78,7 +76,7 @@ public class ComponentProducer {
 		public SortingDirection directionOption;
 
 		public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
-		
+
 		public String[] globalFieldsOption;
 
 		@Override
@@ -90,8 +88,8 @@ public class ComponentProducer {
 		public String printConfigurationOptions() {
 			StringBuilder configuration = new StringBuilder(System.lineSeparator() + "Configuration" + System.lineSeparator());
 			ConfiguredOption[] options = getConfiguration();
-			for(ConfiguredOption option : options){
-				configuration.append(TAB + option.name + ":" + option.value + System.lineSeparator());				
+			for (ConfiguredOption option : options) {
+				configuration.append(TAB + option.name + ":" + option.value + System.lineSeparator());
 			}
 			return configuration.toString();
 		}
@@ -102,7 +100,7 @@ public class ComponentProducer {
 			configuredOptions.add(new ConfiguredOption(orderOption));
 			configuredOptions.add(new ConfiguredOption(directionOption));
 			configuredOptions.add(new ConfiguredOption(GLOBALFIELDS_OPTIONNAME, globalFieldsOption));
-			return configuredOptions.toArray(new ConfiguredOption[]{});
+			return configuredOptions.toArray(new ConfiguredOption[] {});
 		}
 	}
 
