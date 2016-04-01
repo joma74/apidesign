@@ -1,4 +1,4 @@
-package at.joma.apidesign.component.l2.provider.api;
+package at.joma.apidesign.component.l2.provider.api.builder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,6 +18,12 @@ import at.joma.apidesign.component.l2.client.api.f.Sorting;
     ElementType.TYPE,
     ElementType.METHOD
 })
-public @interface AsXML {
+public @interface AsXMLByBuilder {
+
+    @Nonbinding
+    public Sorting sorting() default @Sorting;
+
+    @Nonbinding
+    public Omitting ommiting() default @Omitting;
 
 }

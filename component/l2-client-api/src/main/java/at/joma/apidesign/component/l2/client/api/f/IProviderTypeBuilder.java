@@ -1,10 +1,10 @@
 package at.joma.apidesign.component.l2.client.api.f;
 
-import javax.enterprise.util.AnnotationLiteral;
+import java.lang.annotation.Annotation;
 
 
-public interface IProviderTypeBuilder {
+public interface IProviderTypeBuilder<T extends IProviderTypeWithOptionsSetter & Annotation> {
     
-    public Builder with(AnnotationLiteral<?> providerType);
+	Builder<T> with(Class<T> providerType);
 
 }

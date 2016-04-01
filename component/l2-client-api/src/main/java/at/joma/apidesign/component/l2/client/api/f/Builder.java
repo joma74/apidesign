@@ -1,9 +1,9 @@
 package at.joma.apidesign.component.l2.client.api.f;
 
+import java.lang.annotation.Annotation;
+
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.util.AnnotationLiteral;
 
 import at.joma.apidesign.component.l2.client.api.IL2Component;
 import at.joma.apidesign.component.l2.client.api.IL2Component.OmittingAnnotation;
@@ -11,7 +11,7 @@ import at.joma.apidesign.component.l2.client.api.IL2Component.SortingAnnotation;
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
 
-public class Builder implements ISortingBuilder, IOmittingBuilder, IProviderTypeBuilder {
+public class Builder<T extends IProviderTypeWithOptionsSetter & Annotation> implements ISortingBuilder, IOmittingBuilder, IProviderTypeBuilder<T> {
 
 	private SortingOrder sortingOrder = SortingOrder.ALPHABETICALLY;
 
@@ -19,33 +19,33 @@ public class Builder implements ISortingBuilder, IOmittingBuilder, IProviderType
 
 	private String[] globalFields = new String[] {};
 
-	private AnnotationLiteral<?> providerType = null;
+	private Class<T> providerType = null;
 
 	@Override
-	public Builder with(SortingDirection sortingDirection) {
+	public Builder<T> with(SortingDirection sortingDirection) {
 		this.sortingDirection = sortingDirection;
 		return this;
 	}
 
 	@Override
-	public Builder with(SortingOrder sortingOrder) {
+	public Builder<T> with(SortingOrder sortingOrder) {
 		this.sortingOrder = sortingOrder;
 		return this;
 	}
 
 	@Override
-	public Builder with(String[] globalFields) {
+	public Builder<T> with(String[] globalFields) {
 		this.globalFields = globalFields;
 		return this;
 	}
 
 	@Override
-	public Builder with(AnnotationLiteral<?> providerType) {
+	public Builder<T> with(Class<T> providerType) {
 		this.providerType = providerType;
 		return this;
 	}
 
-	public IL2Component build() {
+	public IL2Component build() throws InstantiationException, IllegalAccessException {
 
 		SortingAnnotation sortingAnnotation = new SortingAnnotation() {
 
@@ -72,9 +72,11 @@ public class Builder implements ISortingBuilder, IOmittingBuilder, IProviderType
 			}
 		};
 
-		final BeanManager manager = CDI.current().getBeanManager();
+		T providerTypeWithConfig = providerType.newInstance();
+		providerTypeWithConfig.setSorting(sortingAnnotation);
+		providerTypeWithConfig.setOmitting(omittingAnnotation);
 
-		Instance<IL2Component> inst = CDI.current().select(IL2Component.class, providerType);
+		Instance<IL2Component> inst = CDI.current().select(IL2Component.class, providerTypeWithConfig);
 
 		IL2Component beanInstance = inst.get();
 

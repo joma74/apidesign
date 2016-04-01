@@ -1,12 +1,12 @@
 package at.joma.apidesign.l2.client.api;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.InjectionTarget;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import javax.xml.XMLConstants;
+
+import org.apache.commons.collections4.ListUtils;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
@@ -20,9 +20,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l1.client.api.IL1Component;
+import at.joma.apidesign.component.l1.client.api.types.ConfiguredOption;
 import at.joma.apidesign.component.l2.client.api.f.Builder;
-import at.joma.apidesign.component.l2.provider.api.AsXMLQualifier;
+import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
+import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
+import at.joma.apidesign.component.l2.provider.api.builder.AsXMLByBuilderQualifier;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
+import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Configured;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses({ ComponentProducer.class, Builder.class, })
@@ -41,28 +45,60 @@ public class ClientOnBuilderTest {
 	}
 
 	@Test
-	public void targetInjection() {
-		final BeanManager manager = CDI.current().getBeanManager();
+	public void testComponent_With_GivenDescParent_OnBuilder() throws InstantiationException, IllegalAccessException {
 
-		Bean<Builder> bean = (Bean<Builder>) manager.resolve(manager.getBeans(Builder.class));
-		AnnotatedType<Builder> type = manager.createAnnotatedType(Builder.class);
+		List<ConfiguredOption> configuredOptions = new ArrayList<ConfiguredOption>();
 
-		InjectionTarget<Builder> target = manager.getInjectionTargetFactory(type).createInjectionTarget(bean);
-		CreationalContext<Builder> ctx = manager.createCreationalContext(bean);
+		ConfiguredOption sortingOrder_conf = new ConfiguredOption(SortingOrder.GIVEN);
+		configuredOptions.add(sortingOrder_conf);
 
-		Builder builder = target.produce(ctx);
-		target.inject(builder, ctx);
+		ConfiguredOption sortingDirection_conf = new ConfiguredOption(SortingDirection.DESC);
+		configuredOptions.add(sortingDirection_conf);
 
-		IL1Component result = builder.with(new AsXMLQualifier()).build();
-	}
+		ConfiguredOption globalFields_conf = new ConfiguredOption(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+		configuredOptions.add(globalFields_conf);
 
-	@Test
-	public void testComponentDefault_OnBuilder() {
+		Builder<AsXMLByBuilderQualifier> builder = new Builder<AsXMLByBuilderQualifier>();
 
-		Builder builder = new Builder();
-		IL1Component bean = builder.with(new AsXMLQualifier()).build();
+		IL1Component bean = builder//
+				.with(SortingOrder.valueOf(sortingOrder_conf.value))//
+				.with(SortingDirection.valueOf(sortingDirection_conf.value))//
+				.with(globalFields_conf.convertValueToArray())//
+				.with(AsXMLByBuilderQualifier.class)//
+				.build();
 
 		Assert.assertNotNull(bean);
+
+		LOG.info(bean.printConfigurationOptions());
+		
+		Assert.assertTrue(ListUtils.isEqualList(configuredOptions, Arrays.asList(bean.getConfiguration())));
+	}
+	
+	@Test
+	public void testComponent_With_Default_OnBuilder() throws InstantiationException, IllegalAccessException {
+
+		List<ConfiguredOption> configuredOptions = new ArrayList<ConfiguredOption>();
+
+		ConfiguredOption sortingOrder_conf = new ConfiguredOption(SortingOrder.ALPHABETICALLY);
+		configuredOptions.add(sortingOrder_conf);
+
+		ConfiguredOption sortingDirection_conf = new ConfiguredOption(SortingDirection.ASC);
+		configuredOptions.add(sortingDirection_conf);
+
+		ConfiguredOption globalFields_conf = new ConfiguredOption(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "" });
+		configuredOptions.add(globalFields_conf);
+
+		Builder<AsXMLByBuilderQualifier> builder = new Builder<AsXMLByBuilderQualifier>();
+
+		IL1Component bean = builder//
+				.with(AsXMLByBuilderQualifier.class)//
+				.build();
+
+		Assert.assertNotNull(bean);
+
+		LOG.info(bean.printConfigurationOptions());
+		
+		Assert.assertTrue(ListUtils.isEqualList(configuredOptions, Arrays.asList(bean.getConfiguration())));
 	}
 
 }
