@@ -8,7 +8,7 @@
 		<artifactId>component</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>impl-one</artifactId>
+	<artifactId>l2-provider-impl-two</artifactId>
 	<name>${project.groupId}.${project.artifactId}</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>at.joma.apidesign</groupId>
-			<artifactId>l1-client-api</artifactId>
+			<artifactId>l2-provider-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

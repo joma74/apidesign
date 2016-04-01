@@ -8,7 +8,7 @@
 		<artifactId>component</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>impl-two</artifactId>
+	<artifactId>l2-provider-impl-one</artifactId>
 	<name>${project.groupId}.${project.artifactId}</name>
 	<url>http://maven.apache.org</url>
 	<properties>

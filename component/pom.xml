@@ -15,8 +15,8 @@
   <modules>
     <module>l1-client-api</module>
     <module>l2-client-api</module>
-    <module>impl-one</module>
-    <module>impl-two</module>
     <module>l2-provider-api</module>
+    <module>l2-provider-impl-one</module>
+    <module>l2-provider-impl-two</module>
   </modules>
 </project>

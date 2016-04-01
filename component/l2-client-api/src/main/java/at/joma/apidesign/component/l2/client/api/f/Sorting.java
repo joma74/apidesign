@@ -8,14 +8,14 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
-import at.joma.apidesign.component.l2.client.api.f.sorting.Order;
+import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.TYPE, ElementType.METHOD })
 public @interface Sorting {
 	
-	Order order() default Order.ALPHABETICALLY;
+	SortingOrder order() default SortingOrder.ALPHABETICALLY;
 	
 	SortingDirection direction() default SortingDirection.ASC;
 

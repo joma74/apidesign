@@ -1,4 +1,4 @@
-package at.joma.apidesign.component.l2.client.api.f;
+package at.joma.apidesign.component.l2.provider.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,8 +9,11 @@ import javax.inject.Qualifier;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.TYPE, ElementType.METHOD })
-public @interface Omitting {
+@Target({
+    ElementType.FIELD,
+    ElementType.TYPE,
+    ElementType.METHOD
+})
+public @interface AsXML {
 
-	String[] globalFields() default { "" };
 }
