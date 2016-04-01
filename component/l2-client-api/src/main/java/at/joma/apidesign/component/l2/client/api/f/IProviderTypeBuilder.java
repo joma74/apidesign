@@ -5,6 +5,6 @@ import javax.enterprise.util.AnnotationLiteral;
 
 public interface IProviderTypeBuilder {
     
-    public Builder with(AnnotationLiteral providerType);
+    public Builder with(AnnotationLiteral<?> providerType);
 
 }

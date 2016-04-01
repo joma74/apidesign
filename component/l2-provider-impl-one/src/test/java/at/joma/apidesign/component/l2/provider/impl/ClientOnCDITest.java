@@ -22,53 +22,48 @@ import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
 import at.joma.apidesign.component.l2.provider.api.AsXML;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses({
-    ComponentProducer.class
-})
+@AdditionalClasses({ ComponentProducer.class })
 public class ClientOnCDITest {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(ClientOnCDITest.class);
 
-    @Rule
-    public TestRule getWatchman() {
-        return new TestWatcher() {
-            protected void starting(Description description) {
-                LOG.info("*********** Running {} ***********", description.getMethodName());
-            }
-        };
-    }
+	private static final Logger LOG = LoggerFactory.getLogger(ClientOnCDITest.class);
 
+	@Rule
+	public TestRule getWatchman() {
+		return new TestWatcher() {
+			protected void starting(Description description) {
+				LOG.info("*********** Running {} ***********", description.getMethodName());
+			}
+		};
+	}
 
-    @Inject
-    @AsXML
-    IL1Component asXmlDefault;
+	@Inject
+	@AsXML
+	IL1Component asXmlDefault;
 
-    @Inject
-    @AsXML
-    @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-    @Omitting(globalFields = {
-        "_parent"
-    })
-    IL1Component asXmlGiven;
+	@Inject
+	@AsXML
+	@Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
+	@Omitting(globalFields = { "_parent" })
+	IL1Component asXmlGiven;
 
-    @Test
-    public void testAsXmlDefault() {
-        
-        Assert.assertNotNull(asXmlDefault);
+	@Test
+	public void testAsXmlDefault() {
 
-        asXmlDefault.serialize(null);
+		Assert.assertNotNull(asXmlDefault);
 
-        LOG.info(asXmlDefault.toString());
-    }
+		asXmlDefault.serialize(null);
 
-    @Test
-    public void testAsXmlGiven() {
-        
-        Assert.assertNotNull(asXmlGiven);
+		LOG.info(asXmlDefault.toString());
+	}
 
-        asXmlGiven.serialize(null);
+	@Test
+	public void testAsXmlGiven() {
 
-        LOG.info(asXmlGiven.toString());
-    }
+		Assert.assertNotNull(asXmlGiven);
+
+		asXmlGiven.serialize(null);
+
+		LOG.info(asXmlGiven.toString());
+	}
 
 }

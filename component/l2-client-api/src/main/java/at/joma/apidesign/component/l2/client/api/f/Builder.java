@@ -1,14 +1,9 @@
 package at.joma.apidesign.component.l2.client.api.f;
 
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
 
 import at.joma.apidesign.component.l2.client.api.IL2Component;
 import at.joma.apidesign.component.l2.client.api.IL2Component.OmittingAnnotation;
@@ -18,82 +13,71 @@ import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
 
 public class Builder implements ISortingBuilder, IOmittingBuilder, IProviderTypeBuilder {
 
-    private SortingOrder sortingOrder = SortingOrder.ALPHABETICALLY;
+	private SortingOrder sortingOrder = SortingOrder.ALPHABETICALLY;
 
-    private SortingDirection sortingDirection = SortingDirection.ASC;
+	private SortingDirection sortingDirection = SortingDirection.ASC;
 
-    private String[] globalFields = new String[]{};
+	private String[] globalFields = new String[] {};
 
-    @Inject
-    private ABC abc;
+	private AnnotationLiteral<?> providerType = null;
 
-    private AnnotationLiteral providerType = null;
+	@Override
+	public Builder with(SortingDirection sortingDirection) {
+		this.sortingDirection = sortingDirection;
+		return this;
+	}
 
-    @Override
-    public Builder with(SortingDirection sortingDirection) {
-        this.sortingDirection = sortingDirection;
-        return this;
-    }
+	@Override
+	public Builder with(SortingOrder sortingOrder) {
+		this.sortingOrder = sortingOrder;
+		return this;
+	}
 
-    @Override
-    public Builder with(SortingOrder sortingOrder) {
-        this.sortingOrder = sortingOrder;
-        return this;
-    }
+	@Override
+	public Builder with(String[] globalFields) {
+		this.globalFields = globalFields;
+		return this;
+	}
 
-    @Override
-    public Builder with(String[] globalFields) {
-        this.globalFields = globalFields;
-        return this;
-    }
+	@Override
+	public Builder with(AnnotationLiteral<?> providerType) {
+		this.providerType = providerType;
+		return this;
+	}
 
-    @Override
-    public Builder with(AnnotationLiteral providerType) {
-        this.providerType = providerType;
-        return this;
-    }
+	public IL2Component build() {
 
-    public IL2Component build() {
+		SortingAnnotation sortingAnnotation = new SortingAnnotation() {
 
-        SortingAnnotation sortingAnnotation = new SortingAnnotation() {
+			private static final long serialVersionUID = 3395353165326173089L;
 
-            private static final long serialVersionUID = 3395353165326173089L;
+			@Override
+			public SortingOrder order() {
+				return Builder.this.sortingOrder;
+			}
 
-            @Override
-            public SortingOrder order() {
-                return Builder.this.sortingOrder;
-            }
+			@Override
+			public SortingDirection direction() {
+				return Builder.this.sortingDirection;
+			}
+		};
 
-            @Override
-            public SortingDirection direction() {
-                return Builder.this.sortingDirection;
-            }
-        };
+		OmittingAnnotation omittingAnnotation = new OmittingAnnotation() {
 
-        OmittingAnnotation omittingAnnotation = new OmittingAnnotation() {
+			private static final long serialVersionUID = -1139593265279393709L;
 
-            private static final long serialVersionUID = -1139593265279393709L;
+			@Override
+			public String[] globalFields() {
+				return Builder.this.globalFields;
+			}
+		};
 
-            @Override
-            public String[] globalFields() {
-                return Builder.this.globalFields;
-            }
-        };
+		final BeanManager manager = CDI.current().getBeanManager();
 
-        final BeanManager manager = CDI.current().getBeanManager();
+		Instance<IL2Component> inst = CDI.current().select(IL2Component.class, providerType);
 
-        Instance<IL2Component> inst = CDI.current().select(IL2Component.class, providerType);
+		IL2Component beanInstance = inst.get();
 
-        IL2Component beanInstance = inst.get();
-
-        return beanInstance;
-    }
-
-    public class IL2ComponentInjectionProxy {
-
-        @Omitting
-        @Sorting
-        @Inject
-        public IL2Component instance;
-    }
+		return beanInstance;
+	}
 }

@@ -18,7 +18,7 @@ import at.joma.apidesign.component.l2.provider.api.AsXML;
 public class ComponentProducer {
 
     @Produces
-    @AsXML(ommiting = @Omitting, sorting = @Sorting)
+    @AsXML
     public IL2Component doProduce(InjectionPoint ip) throws NoSuchMethodException {
         
         this.getClass().getAnnotation(Sorting.class).direction();
