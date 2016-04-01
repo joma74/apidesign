@@ -11,7 +11,7 @@ import at.joma.apidesign.component.l2.client.api.IL2Component.SortingAnnotation;
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
 
-public class Builder<T extends IProviderTypeWithOptionsSetter & Annotation> implements ISortingBuilder, IOmittingBuilder, IProviderTypeBuilder<T> {
+public class Builder<T extends IProviderTypeWithOptionsSetter & Annotation> implements ISortingBuilder<T>, IOmittingBuilder<T>, IProviderTypeBuilder<T> {
 
 	private SortingOrder sortingOrder = SortingOrder.ALPHABETICALLY;
 
