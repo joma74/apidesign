@@ -1,7 +1,9 @@
 package at.joma.apidesign.component.l2.client.api.f;
 
-public interface IOmittingBuilder {
+import java.lang.annotation.Annotation;
 
-    Builder with(String[] globalFields);
+public interface IOmittingBuilder<T extends IProviderTypeWithOptionsSetter & Annotation> {
+
+    Builder<T> with(String[] globalFields);
 
 }

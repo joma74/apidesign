@@ -1,12 +1,14 @@
 package at.joma.apidesign.component.l2.client.api.f;
 
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
+import java.lang.annotation.Annotation;
+
 import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
+import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
 
-public interface ISortingBuilder {
+public interface ISortingBuilder<T extends IProviderTypeWithOptionsSetter & Annotation> {
 
-    Builder with(SortingDirection direction);
+	Builder<T> with(SortingDirection direction);
 
-    Builder with(SortingOrder order);
+	Builder<T> with(SortingOrder order);
 
 }
