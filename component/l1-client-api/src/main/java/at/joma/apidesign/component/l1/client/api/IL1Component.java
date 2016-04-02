@@ -8,6 +8,6 @@ public interface IL1Component {
 
 	ConfiguredOption[] getConfiguration();
 	
-	String printConfigurationOptions();
+	String printConfiguration();
 
 }

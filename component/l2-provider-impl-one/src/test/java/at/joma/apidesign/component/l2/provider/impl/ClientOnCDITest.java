@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l1.client.api.IL1Component;
-import at.joma.apidesign.component.l2.client.api.f.Omitting;
-import at.joma.apidesign.component.l2.client.api.f.Sorting;
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
+import at.joma.apidesign.component.l2.client.api.Omitting;
+import at.joma.apidesign.component.l2.client.api.Sorting;
+import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
+import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.provider.api.AsXML;
 
 @RunWith(CdiRunner.class)

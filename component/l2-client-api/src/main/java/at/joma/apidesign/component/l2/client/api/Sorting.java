@@ -1,4 +1,4 @@
-package at.joma.apidesign.component.l2.client.api.f;
+package at.joma.apidesign.component.l2.client.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 import javax.enterprise.util.Nonbinding;
 
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
+import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
+import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
@@ -17,9 +17,6 @@ import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
     ElementType.METHOD
 })
 public @interface Sorting {
-
-    public static final String ORDER_METHODNAME = "order";
-    public static final String DIRECTION_METHODNAME = "direction";
 
     @Nonbinding
     SortingOrder order() default SortingOrder.ALPHABETICALLY;

@@ -9,10 +9,10 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import at.joma.apidesign.component.l1.client.api.types.ConfiguredOption;
 import at.joma.apidesign.component.l2.client.api.IL2Component;
-import at.joma.apidesign.component.l2.client.api.f.Omitting;
-import at.joma.apidesign.component.l2.client.api.f.Sorting;
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
+import at.joma.apidesign.component.l2.client.api.Omitting;
+import at.joma.apidesign.component.l2.client.api.Sorting;
+import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
+import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.provider.api.AsXML;
 import at.joma.apidesign.component.l2.provider.api.builder.AsXMLByBuilder;
 
@@ -85,7 +85,7 @@ public class ComponentProducer {
 		}
 
 		@Override
-		public String printConfigurationOptions() {
+		public String printConfiguration() {
 			StringBuilder configuration = new StringBuilder(System.lineSeparator() + "Configuration" + System.lineSeparator());
 			ConfiguredOption[] options = getConfiguration();
 			for (ConfiguredOption option : options) {

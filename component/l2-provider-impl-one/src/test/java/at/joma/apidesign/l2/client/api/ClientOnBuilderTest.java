@@ -19,10 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l1.client.api.IL1Component;
 import at.joma.apidesign.component.l1.client.api.types.ConfiguredOption;
-import at.joma.apidesign.component.l2.client.api.f.Builder;
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingDirection;
-import at.joma.apidesign.component.l2.client.api.f.sorting.SortingOrder;
-import at.joma.apidesign.component.l2.provider.api.builder.AsXMLByBuilderQualifier;
+import at.joma.apidesign.component.l2.client.api.IL2Component.Builder;
+import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
+import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
+import at.joma.apidesign.component.l2.provider.api.builder.AsXMLWithOptions;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Configured;
 
@@ -56,18 +56,17 @@ public class ClientOnBuilderTest {
 		ConfiguredOption globalFields_conf = new ConfiguredOption(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
 		configuredOptions.add(globalFields_conf);
 
-		Builder<AsXMLByBuilderQualifier> builder = new Builder<AsXMLByBuilderQualifier>();
+		Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
 
 		IL1Component bean = builder//
 				.with(SortingOrder.valueOf(sortingOrder_conf.value))//
 				.with(SortingDirection.valueOf(sortingDirection_conf.value))//
 				.with(globalFields_conf.convertValueToArray())//
-				.with(AsXMLByBuilderQualifier.class)//
 				.build();
 
 		Assert.assertNotNull(bean);
 
-		LOG.info(bean.printConfigurationOptions());
+		LOG.info(bean.printConfiguration());
 
 		Assert.assertTrue(ListUtils.isEqualList(configuredOptions, Arrays.asList(bean.getConfiguration())));
 	}
@@ -86,15 +85,14 @@ public class ClientOnBuilderTest {
 		ConfiguredOption globalFields_conf = new ConfiguredOption(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "" });
 		configuredOptions.add(globalFields_conf);
 
-		Builder<AsXMLByBuilderQualifier> builder = new Builder<AsXMLByBuilderQualifier>();
+		Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
 
 		IL1Component bean = builder//
-				.with(AsXMLByBuilderQualifier.class)//
 				.build();
 
 		Assert.assertNotNull(bean);
 
-		LOG.info(bean.printConfigurationOptions());
+		LOG.info(bean.printConfiguration());
 
 		Assert.assertTrue(ListUtils.isEqualList(configuredOptions, Arrays.asList(bean.getConfiguration())));
 	}

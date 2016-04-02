@@ -1,4 +1,4 @@
-package at.joma.apidesign.component.l2.client.api.f;
+package at.joma.apidesign.component.l2.client.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,8 +14,6 @@ import javax.enterprise.util.Nonbinding;
     ElementType.METHOD
 })
 public @interface Omitting {
-
-    public static final String GLOBALFIELDS_METHODNAME = "globalFields";
 
     @Nonbinding
     String[] globalFields() default {

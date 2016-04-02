@@ -8,22 +8,18 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
-import at.joma.apidesign.component.l2.client.api.f.Omitting;
-import at.joma.apidesign.component.l2.client.api.f.Sorting;
+import at.joma.apidesign.component.l2.client.api.Omitting;
+import at.joma.apidesign.component.l2.client.api.Sorting;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({
-    ElementType.FIELD,
-    ElementType.TYPE,
-    ElementType.METHOD
-})
+@Target({ ElementType.FIELD, ElementType.TYPE, ElementType.METHOD })
 public @interface AsXMLByBuilder {
 
-    @Nonbinding
-    public Sorting sorting() default @Sorting;
+	@Nonbinding
+	public Sorting sorting() default @Sorting;
 
-    @Nonbinding
-    public Omitting ommiting() default @Omitting;
+	@Nonbinding
+	public Omitting ommiting() default @Omitting;
 
 }
