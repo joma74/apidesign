@@ -1,16 +1,14 @@
 package at.joma.apidesign.component.l2.provider.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import at.joma.apidesign.component.l1.client.api.types.ConfiguredOption;
 import at.joma.apidesign.component.l2.client.api.IL2Component;
 import at.joma.apidesign.component.l2.client.api.Omitting;
 import at.joma.apidesign.component.l2.client.api.Sorting;
+import at.joma.apidesign.component.l2.client.api.types.ConfiguredOption;
+import at.joma.apidesign.component.l2.client.api.types.ConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.provider.api.AsXML;
@@ -59,25 +57,22 @@ public class ComponentProducer {
 	}
 
 	private IL2Component createWithOptions(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
-		Configured iL2Component = new Configured();
-		iL2Component.orderOption = orderOption;
-		iL2Component.directionOption = directionOption;
-		iL2Component.globalFieldsOption = globalFieldsOption;
+		Configured iL2Component = new Configured(orderOption, directionOption, globalFieldsOption);
 
 		return iL2Component;
 	}
 
 	public static class Configured implements IL2Component {
 
-		private static final String TAB = "\t";
-
-		public SortingOrder orderOption;
-
-		public SortingDirection directionOption;
-
 		public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
 
-		public String[] globalFieldsOption;
+		public ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+		
+		public Configured(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption){
+			this.configuredOptions.with(orderOption);
+			this.configuredOptions.with(directionOption);
+			this.configuredOptions.with(GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
+		}
 
 		@Override
 		public String serialize(Object serializable) {
@@ -86,21 +81,12 @@ public class ComponentProducer {
 
 		@Override
 		public String printConfiguration() {
-			StringBuilder configuration = new StringBuilder(System.lineSeparator() + "Configuration" + System.lineSeparator());
-			ConfiguredOption[] options = getConfiguration();
-			for (ConfiguredOption option : options) {
-				configuration.append(TAB + option.name + ":" + option.value + System.lineSeparator());
-			}
-			return configuration.toString();
+			return configuredOptions.printConfiguration();
 		}
 
 		@Override
 		public ConfiguredOption[] getConfiguration() {
-			List<ConfiguredOption> configuredOptions = new ArrayList<ConfiguredOption>();
-			configuredOptions.add(new ConfiguredOption(orderOption));
-			configuredOptions.add(new ConfiguredOption(directionOption));
-			configuredOptions.add(new ConfiguredOption(GLOBALFIELDS_OPTIONNAME, globalFieldsOption));
-			return configuredOptions.toArray(new ConfiguredOption[] {});
+			return configuredOptions.getConfiguration();
 		}
 	}
 
