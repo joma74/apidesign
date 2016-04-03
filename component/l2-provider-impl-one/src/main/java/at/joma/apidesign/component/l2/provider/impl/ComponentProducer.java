@@ -88,6 +88,11 @@ public class ComponentProducer {
 		public ConfiguredOption[] getConfiguration() {
 			return configuredOptions.getConfiguration();
 		}
+
+		@Override
+		public int size() {
+			return configuredOptions.size();
+		}
 	}
 
 }

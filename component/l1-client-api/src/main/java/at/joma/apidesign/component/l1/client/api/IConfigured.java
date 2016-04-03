@@ -5,5 +5,7 @@ public interface IConfigured {
 	IConfiguredOption[] getConfiguration();
 
 	String printConfiguration();
+	
+	int size();
 
 }
