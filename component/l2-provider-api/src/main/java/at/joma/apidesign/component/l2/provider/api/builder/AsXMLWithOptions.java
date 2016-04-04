@@ -4,10 +4,10 @@ import javax.enterprise.util.AnnotationLiteral;
 
 import at.joma.apidesign.component.l2.client.api.Omitting;
 import at.joma.apidesign.component.l2.client.api.Sorting;
-import at.joma.apidesign.component.l2.client.api.builder.IProviderRequiredOptions;
+import at.joma.apidesign.component.l2.client.api.builder.IRequiredProviderOptions;
 
 @AsXMLByBuilder
-public class AsXMLWithOptions extends AnnotationLiteral<AsXMLByBuilder> implements AsXMLByBuilder, IProviderRequiredOptions {
+public class AsXMLWithOptions extends AnnotationLiteral<AsXMLByBuilder> implements AsXMLByBuilder, IRequiredProviderOptions {
 
     private static final long serialVersionUID = -3254824763865440793L;
 

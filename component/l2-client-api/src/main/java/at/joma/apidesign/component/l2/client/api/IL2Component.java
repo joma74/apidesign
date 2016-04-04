@@ -6,7 +6,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 
 import at.joma.apidesign.component.l1.client.api.IL1Component;
-import at.joma.apidesign.component.l2.client.api.builder.IProviderRequiredOptions;
+import at.joma.apidesign.component.l2.client.api.builder.IRequiredProviderOptions;
 import at.joma.apidesign.component.l2.client.api.builder.IWithConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.client.api.builder.IWithOmitting;
 import at.joma.apidesign.component.l2.client.api.builder.IWithSorting;
@@ -20,7 +20,7 @@ public interface IL2Component extends IL1Component {
 
     @Sorting
     @Omitting
-    public class Builder<T extends IProviderRequiredOptions & Annotation> implements IWithSorting<T>, IWithOmitting<T>, IWithConfiguredOptionsHolder<T> {
+    public class Builder<T extends IRequiredProviderOptions & Annotation> implements IWithSorting<T>, IWithOmitting<T>, IWithConfiguredOptionsHolder<T> {
 
         private ConfiguredOptionsHolder configuredOptionsHolder = new ConfiguredOptionsHolder();
 
