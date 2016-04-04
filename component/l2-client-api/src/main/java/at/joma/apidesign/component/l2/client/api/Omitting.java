@@ -14,8 +14,8 @@ import javax.enterprise.util.Nonbinding;
     ElementType.METHOD
 })
 public @interface Omitting {
-	
-	public static final String GLOBALFIELDS_NAME = "globalFields";
+
+    public static final String GLOBALFIELDS_NAME = "globalFields";
 
     @Nonbinding
     String[] globalFields() default {

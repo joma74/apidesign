@@ -13,13 +13,17 @@ import at.joma.apidesign.component.l2.client.api.Sorting;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.TYPE, ElementType.METHOD })
+@Target({
+    ElementType.FIELD,
+    ElementType.TYPE,
+    ElementType.METHOD
+})
 public @interface AsXMLByBuilder {
 
-	@Nonbinding
-	public Sorting sorting() default @Sorting;
+    @Nonbinding
+    public Omitting ommiting() default @Omitting;
 
-	@Nonbinding
-	public Omitting ommiting() default @Omitting;
+    @Nonbinding
+    public Sorting sorting() default @Sorting;
 
 }

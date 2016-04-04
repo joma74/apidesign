@@ -18,66 +18,66 @@ import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsH
 
 public interface IL2Component extends IL1Component {
 
-	@Sorting
-	@Omitting
-	public class Builder<T extends IProviderRequiredOptions & Annotation> implements IWithSorting<T>, IWithOmitting<T>, IWithConfiguredOptionsHolder<T> {
+    @Sorting
+    @Omitting
+    public class Builder<T extends IProviderRequiredOptions & Annotation> implements IWithSorting<T>, IWithOmitting<T>, IWithConfiguredOptionsHolder<T> {
 
-		private ConfiguredOptionsHolder configuredOptionsHolder = new ConfiguredOptionsHolder();
+        private ConfiguredOptionsHolder configuredOptionsHolder = new ConfiguredOptionsHolder();
 
-		private final Class<T> providerType;
+        private final Class<T> providerType;
 
-		public Builder(Class<T> providerType) {
+        public Builder(Class<T> providerType) {
 
-			this.providerType = providerType;
+            this.providerType = providerType;
 
-			this.configuredOptionsHolder.with(this.getClass().getAnnotation(Sorting.class).order());
-			this.configuredOptionsHolder.with(this.getClass().getAnnotation(Sorting.class).direction());
-			this.configuredOptionsHolder.with(Omitting.GLOBALFIELDS_NAME, this.getClass().getAnnotation(Omitting.class).globalFields());
-		}
+            this.configuredOptionsHolder.with(this.getClass().getAnnotation(Sorting.class).order());
+            this.configuredOptionsHolder.with(this.getClass().getAnnotation(Sorting.class).direction());
+            this.configuredOptionsHolder.with(Omitting.GLOBALFIELDS_NAME, this.getClass().getAnnotation(Omitting.class).globalFields());
+        }
 
-		@Override
-		public Builder<T> with(SortingDirection sortingDirection) {
-			this.configuredOptionsHolder.with(sortingDirection);
-			return this;
-		}
+        public IL2Component build() throws ReflectiveOperationException {
 
-		@Override
-		public Builder<T> with(SortingOrder sortingOrder) {
-			this.configuredOptionsHolder.with(sortingOrder);
-			return this;
-		}
+            SortingOptions sortingAnnotation = SortingOptions.class.newInstance();
+            sortingAnnotation.setSortingDirection(this.configuredOptionsHolder.getValueFor(SortingDirection.class));
+            sortingAnnotation.setSortingOrder(this.configuredOptionsHolder.getValueFor(SortingOrder.class));
 
-		@Override
-		public Builder<T> with(String[] globalFields) {
-			this.configuredOptionsHolder.with(Omitting.GLOBALFIELDS_NAME, globalFields);
-			return this;
-		}
+            OmittingOptions omittingAnnotation = OmittingOptions.class.newInstance();
+            omittingAnnotation.setGlobalFields((String[]) this.configuredOptionsHolder.getValueFor(Omitting.GLOBALFIELDS_NAME));
 
-		@Override
-		public Builder<T> with(ConfiguredOptionsHolder configuredOptionsHolder) {
-			this.configuredOptionsHolder = configuredOptionsHolder;
-			return this;
-		}
+            T providerTypeInstance = providerType.newInstance();
+            providerTypeInstance.setSortingOption(sortingAnnotation);
+            providerTypeInstance.setOmittingOption(omittingAnnotation);
 
-		public IL2Component build() throws InstantiationException, IllegalAccessException {
+            Instance<IL2Component> inst = CDI.current().select(IL2Component.class, providerTypeInstance);
 
-			SortingOptions sortingAnnotation = SortingOptions.class.newInstance();
-			sortingAnnotation.setSortingDirection(this.configuredOptionsHolder.getValueFor(SortingDirection.class));
-			sortingAnnotation.setSortingOrder(this.configuredOptionsHolder.getValueFor(SortingOrder.class));
+            IL2Component beanInstance = inst.get(); // NOSONAR
 
-			OmittingOptions omittingAnnotation = OmittingOptions.class.newInstance();
-			omittingAnnotation.setGlobalFields((String[])this.configuredOptionsHolder.getValueFor(Omitting.GLOBALFIELDS_NAME));
+            return beanInstance;
+        }
 
-			T providerTypeInstance = providerType.newInstance();
-			providerTypeInstance.setSortingOption(sortingAnnotation);
-			providerTypeInstance.setOmittingOption(omittingAnnotation);
+        @Override
+        public Builder<T> with(ConfiguredOptionsHolder configuredOptionsHolder) {
+            this.configuredOptionsHolder = configuredOptionsHolder;
+            return this;
+        }
 
-			Instance<IL2Component> inst = CDI.current().select(IL2Component.class, providerTypeInstance);
+        @Override
+        public Builder<T> with(SortingDirection sortingDirection) {
+            this.configuredOptionsHolder.with(sortingDirection);
+            return this;
+        }
 
-			IL2Component beanInstance = inst.get();
+        @Override
+        public Builder<T> with(SortingOrder sortingOrder) {
+            this.configuredOptionsHolder.with(sortingOrder);
+            return this;
+        }
 
-			return beanInstance;
-		}
-	}
+        @Override
+        public Builder<T> with(String[] globalFields) {
+            this.configuredOptionsHolder.with(Omitting.GLOBALFIELDS_NAME, globalFields);
+            return this;
+        }
+    }
 
 }

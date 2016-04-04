@@ -1,7 +1,9 @@
 package at.joma.apidesign.component.l2.provider;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,104 +15,108 @@ import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsH
 
 public class ConfiguredOptionsHolderTest {
 
-	public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
-	
-	public static final String[] GLOBALFIELDS = new String[] { "_parent" };
+    public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-	
-	public ConfiguredOptionsHolder setup_ConfigOptionsHolder_1(){
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions//
-				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.DESC)//
-				.with(GLOBALFIELDS_OPTIONNAME, GLOBALFIELDS);
-		
-		return configuredOptions;
-	}
+    public static final String[] GLOBALFIELDS = new String[]{
+        "_parent"
+    };
 
-	@Test
-	public void testConfigurationAllSet() {
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-		ConfiguredOptionsHolder configuredOptions = setup_ConfigOptionsHolder_1();
+    public ConfiguredOptionsHolder setup_ConfigOptionsHolder_1() {
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.DESC)//
+                .with(GLOBALFIELDS_OPTIONNAME, GLOBALFIELDS);
 
-		assertThat(configuredOptions.optionsCount(), is(3));
-		
-		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
-		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
+        return configuredOptions;
+    }
 
-		assertThat(configuredOptions.getValueFor(SortingDirection.class), is(SortingDirection.DESC));
-		assertThat(configuredOptions.getValueFor(SortingDirection.class), is(not(SortingDirection.ASC)));
-		assertThat(configuredOptions.getValueFor(SortingDirection.class), is(not(SortingDirection.NONE)));
+    @Test
+    public void testConfigurationAllSet() {
 
-		assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(GLOBALFIELDS));
-	}
-	
-	@Test
-	public void testTwoEqualConfigurationsAreEqual() {
+        ConfiguredOptionsHolder configuredOptions = setup_ConfigOptionsHolder_1();
 
-		ConfiguredOptionsHolder configuredOptions_a = setup_ConfigOptionsHolder_1();
-		ConfiguredOptionsHolder configuredOptions_b = setup_ConfigOptionsHolder_1();
+        assertThat(configuredOptions.optionsCount(), is(3));
 
-		assertThat(configuredOptions_a, is(equalTo(configuredOptions_b)));
-	}
-	
-	@Test
-	public void testConfigurationOnSecondTime() {
+        assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
+        assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
 
-		ConfiguredOptionsHolder configuredOptions = setup_ConfigOptionsHolder_1();
+        assertThat(configuredOptions.getValueFor(SortingDirection.class), is(SortingDirection.DESC));
+        assertThat(configuredOptions.getValueFor(SortingDirection.class), is(not(SortingDirection.ASC)));
+        assertThat(configuredOptions.getValueFor(SortingDirection.class), is(not(SortingDirection.NONE)));
 
-		assertThat(configuredOptions.optionsCount(), is(3));
-		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
-		assertThat(configuredOptions.getValueFor(SortingDirection.class), is(SortingDirection.DESC));
-		assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(GLOBALFIELDS));
-		
-		configuredOptions.with(SortingOrder.ALPHABETICALLY);
-		configuredOptions.with(SortingDirection.DESC);
-		String[] globalfields_child = new String[] { "_child" };
-		configuredOptions.with(GLOBALFIELDS_OPTIONNAME, globalfields_child);
-		
-		assertThat(configuredOptions.optionsCount(), is(3));
-		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.ALPHABETICALLY));
-		assertThat(configuredOptions.getValueFor(SortingDirection.class), is(SortingDirection.DESC));
-		assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(globalfields_child));
-	}
+        assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(GLOBALFIELDS));
+    }
 
-	@Test
-	public void testConfigurationNoDirection() {
-		
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + SortingDirection.class.getSimpleName());
+    @Test
+    public void testConfigurationNoDirection() {
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		assertThat(configuredOptions.optionsCount(), is(0));
-		
-		configuredOptions.with(SortingOrder.GIVEN);
+        this.thrown.expect(IllegalArgumentException.class);
+        this.thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + SortingDirection.class.getSimpleName());
 
-		assertThat(configuredOptions.optionsCount(), is(1));
-		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
-		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        assertThat(configuredOptions.optionsCount(), is(0));
 
-		configuredOptions.getValueFor(SortingDirection.class);
-	}
-	
-	@Test
-	public void testConfigurationNoGlobal() {
-		
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + GLOBALFIELDS_OPTIONNAME);
+        configuredOptions.with(SortingOrder.GIVEN);
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		assertThat(configuredOptions.optionsCount(), is(0));
-		
-		configuredOptions.with(SortingOrder.GIVEN);
-		
-		assertThat(configuredOptions.optionsCount(), is(1));
-		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
-		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
+        assertThat(configuredOptions.optionsCount(), is(1));
+        assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
+        assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
 
-		configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME);
-	}
+        configuredOptions.getValueFor(SortingDirection.class);
+    }
+
+    @Test
+    public void testConfigurationNoGlobal() {
+
+        this.thrown.expect(IllegalArgumentException.class);
+        this.thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + GLOBALFIELDS_OPTIONNAME);
+
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        assertThat(configuredOptions.optionsCount(), is(0));
+
+        configuredOptions.with(SortingOrder.GIVEN);
+
+        assertThat(configuredOptions.optionsCount(), is(1));
+        assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
+        assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
+
+        configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME);
+    }
+
+    @Test
+    public void testConfigurationOnSecondTime() {
+
+        ConfiguredOptionsHolder configuredOptions = setup_ConfigOptionsHolder_1();
+
+        assertThat(configuredOptions.optionsCount(), is(3));
+        assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
+        assertThat(configuredOptions.getValueFor(SortingDirection.class), is(SortingDirection.DESC));
+        assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(GLOBALFIELDS));
+
+        configuredOptions.with(SortingOrder.ALPHABETICALLY);
+        configuredOptions.with(SortingDirection.DESC);
+        String[] globalfields_child = new String[]{
+            "_child"
+        };
+        configuredOptions.with(GLOBALFIELDS_OPTIONNAME, globalfields_child);
+
+        assertThat(configuredOptions.optionsCount(), is(3));
+        assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.ALPHABETICALLY));
+        assertThat(configuredOptions.getValueFor(SortingDirection.class), is(SortingDirection.DESC));
+        assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(globalfields_child));
+    }
+
+    @Test
+    public void testTwoEqualConfigurationsAreEqual() {
+
+        ConfiguredOptionsHolder configuredOptions_a = setup_ConfigOptionsHolder_1();
+        ConfiguredOptionsHolder configuredOptions_b = setup_ConfigOptionsHolder_1();
+
+        assertThat(configuredOptions_a, is(equalTo(configuredOptions_b)));
+    }
 
 }

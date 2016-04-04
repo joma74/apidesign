@@ -19,31 +19,35 @@ import at.joma.apidesign.component.l2.provider.api.AsXML;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses({ ComponentProducer.class })
+@AdditionalClasses({
+    ComponentProducer.class
+})
 public class ClientTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ClientTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClientTest.class);
 
-	@Rule
-	public TestRule getWatchman() {
-		return new TestWatcher() {
-			protected void starting(Description description) {
-				LOG.info("*********** Running {} ***********", description.getMethodName());
-			}
-		};
-	}
+    @Inject
+    @AsXML
+    IL1Component asXmlDefault;
 
-	@Inject
-	@AsXML
-	IL1Component asXmlDefault;
+    @Rule
+    public TestRule getWatchman() {
+        return new TestWatcher() {
 
-	@Test
-	public void testComponent() {
-		Assert.assertNotNull(asXmlDefault);
+            @Override
+            protected void starting(Description description) {
+                LOG.info("*********** Running {} ***********", description.getMethodName());
+            }
+        };
+    }
 
-		asXmlDefault.serialize(null);
-		
-		LOG.info(asXmlDefault.toString());
-	}
+    @Test
+    public void testComponent() {
+        Assert.assertNotNull(this.asXmlDefault);
+
+        this.asXmlDefault.serialize(null);
+
+        LOG.info(this.asXmlDefault.toString());
+    }
 
 }

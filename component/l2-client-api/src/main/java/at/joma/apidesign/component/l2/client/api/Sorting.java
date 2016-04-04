@@ -19,10 +19,9 @@ import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 public @interface Sorting {
 
     @Nonbinding
-    SortingOrder order() default SortingOrder.ALPHABETICALLY;
-
+    SortingDirection direction() default SortingDirection.ASC;
 
     @Nonbinding
-    SortingDirection direction() default SortingDirection.ASC;
+    SortingOrder order() default SortingOrder.ALPHABETICALLY;
 
 }

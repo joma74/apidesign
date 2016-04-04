@@ -8,8 +8,8 @@ import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 
 public interface IWithSorting<T extends IProviderRequiredOptions & Annotation> {
 
-	Builder<T> with(SortingDirection direction);
+    Builder<T> with(SortingDirection direction);
 
-	Builder<T> with(SortingOrder order);
+    Builder<T> with(SortingOrder order);
 
 }

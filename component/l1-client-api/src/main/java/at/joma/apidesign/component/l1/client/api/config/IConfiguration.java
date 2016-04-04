@@ -2,10 +2,10 @@ package at.joma.apidesign.component.l1.client.api.config;
 
 public interface IConfiguration {
 
-	IOption[] getConfiguration();
+    IOption[] getConfiguration();
 
-	String printConfiguration();
-	
-	int optionsCount();
+    int optionsCount();
+
+    String printConfiguration();
 
 }

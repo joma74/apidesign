@@ -2,6 +2,8 @@ package at.joma.apidesign.component.l2.client.api.types;
 
 public enum SortingDirection {
 
-	ASC, DESC, NONE;
+    ASC,
+    DESC,
+    NONE;
 
 }

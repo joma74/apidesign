@@ -27,72 +27,80 @@ import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Configured;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses({ ComponentProducer.class })
+@AdditionalClasses({
+    ComponentProducer.class
+})
 public class OnCDITest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OnCDITest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OnCDITest.class);
 
-	@Rule
-	public TestRule getWatchman() {
-		return new TestWatcher() {
-			protected void starting(Description description) {
-				LOG.info("*********** Running {} ***********", description.getMethodName());
-			}
-		};
-	}
+    @Inject
+    @AsXML
+    IL1Component asXmlDefault;
 
-	@Inject
-	@AsXML
-	IL1Component asXmlDefault;
+    @Inject
+    @AsXML
+    IL1Component asXmlDefaultSame;
 
-	@Inject
-	@AsXML
-	IL1Component asXmlDefaultSame;
+    @Inject
+    @AsXML
+    @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
+    @Omitting(globalFields = {
+        "_parent"
+    })
+    IL1Component asXmlGiven;
 
-	@Inject
-	@AsXML
-	@Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-	@Omitting(globalFields = { "_parent" })
-	IL1Component asXmlGiven;
+    @Rule
+    public TestRule getWatchman() {
+        return new TestWatcher() {
 
-	@Test
-	public void testDefaultSettings() {
+            @Override
+            protected void starting(Description description) {
+                LOG.info("*********** Running {} ***********", description.getMethodName());
+            }
+        };
+    }
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions//
-				.with(SortingOrder.ALPHABETICALLY)//
-				.with(SortingDirection.ASC)//
-				.with(Configured.GLOBALFIELDS_OPTIONNAME, new String[] {})//
-		;
+    @Test
+    public void testDefaultSettings() {
 
-		Assert.assertNotNull(asXmlDefault);
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions//
+                .with(SortingOrder.ALPHABETICALLY)//
+                .with(SortingDirection.ASC)//
+                .with(Configured.GLOBALFIELDS_OPTIONNAME, new String[]{})//
+        ;
 
-		LOG.info(asXmlDefault.printConfiguration());
+        Assert.assertNotNull(this.asXmlDefault);
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(asXmlDefault.getConfiguration())));
-	}
+        LOG.info(this.asXmlDefault.printConfiguration());
 
-	@Test
-	public void testGivenSettings() {
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(this.asXmlDefault.getConfiguration())));
+    }
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions//
-				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.NONE)//
-				.with(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" })//
-		;
+    @Test
+    public void testForSameness() {
 
-		Assert.assertNotNull(asXmlGiven);
+        Assert.assertSame(this.asXmlDefault, this.asXmlDefaultSame);
+    }
 
-		LOG.info(asXmlGiven.printConfiguration());
+    @Test
+    public void testGivenSettings() {
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(asXmlGiven.getConfiguration())));
-	}
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.NONE)//
+                .with(Configured.GLOBALFIELDS_OPTIONNAME, new String[]{
+                    "_parent"
+                })//
+        ;
 
-	@Test
-	public void testForSameness() {
-		
-		Assert.assertSame(asXmlDefault, asXmlDefaultSame);
-	}
+        Assert.assertNotNull(this.asXmlGiven);
+
+        LOG.info(this.asXmlGiven.printConfiguration());
+
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(this.asXmlGiven.getConfiguration())));
+    }
 
 }

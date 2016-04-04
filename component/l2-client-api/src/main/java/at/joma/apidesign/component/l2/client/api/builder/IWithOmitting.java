@@ -6,6 +6,6 @@ import at.joma.apidesign.component.l2.client.api.IL2Component.Builder;
 
 public interface IWithOmitting<T extends IProviderRequiredOptions & Annotation> {
 
-	Builder<T> with(String[] globalFields);
+    Builder<T> with(String[] globalFields);
 
 }

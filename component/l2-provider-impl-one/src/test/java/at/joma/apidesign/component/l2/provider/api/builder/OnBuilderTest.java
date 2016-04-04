@@ -24,91 +24,100 @@ import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Configured;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses({ ComponentProducer.class, Builder.class, })
+@AdditionalClasses({
+    ComponentProducer.class,
+    Builder.class,
+})
 public class OnBuilderTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OnBuilderTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OnBuilderTest.class);
 
-	@Rule
-	public TestRule getWatchman() {
-		return new TestWatcher() {
+    @Rule
+    public TestRule getWatchman() {
+        return new TestWatcher() {
 
-			protected void starting(Description description) {
-				LOG.info("*********** Running {} ***********", description.getMethodName());
-			}
-		};
-	}
+            @Override
+            protected void starting(Description description) {
+                LOG.info("*********** Running {} ***********", description.getMethodName());
+            }
+        };
+    }
 
-	@Test
-	public void testComponent_With_GivenDescParent() throws InstantiationException, IllegalAccessException {
+    @Test
+    public void testComponent_ForSameness() throws ReflectiveOperationException {
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions//
-				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.DESC)//
-				.with(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.DESC)//
+                .with(Configured.GLOBALFIELDS_OPTIONNAME, new String[]{
+                    "_parent"
+                });
 
-		Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
+        Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
 
-		IL1Component bean = builder//
-				.with(configuredOptions.getValueFor(SortingOrder.class))//
-				.with(configuredOptions.getValueFor(SortingDirection.class))//
-				.with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
-				.build();
-		
-		Assert.assertNotNull(bean);
+        IL1Component bean1 = builder//
+                .with(configuredOptions.getValueFor(SortingOrder.class))//
+                .with(configuredOptions.getValueFor(SortingDirection.class))//
+                .with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
+                .build();
 
-		LOG.info(bean.printConfiguration());
+        IL1Component bean2 = builder//
+                .with(configuredOptions.getValueFor(SortingOrder.class))//
+                .with(configuredOptions.getValueFor(SortingDirection.class))//
+                .with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
+                .build();
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(bean.getConfiguration())));
-	}
-	
-	@Test
-	public void testComponent_ForSameness() throws InstantiationException, IllegalAccessException {
+        Assert.assertSame(bean1, bean2);
+    }
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions//
-				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.DESC)//
-				.with(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+    @Test
+    public void testComponent_With_Default() throws ReflectiveOperationException {
 
-		Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions//
+                .with(SortingOrder.ALPHABETICALLY)//
+                .with(SortingDirection.ASC)//
+                .with(Configured.GLOBALFIELDS_OPTIONNAME, new String[]{
+                    ""
+                });
 
-		IL1Component bean1 = builder//
-				.with(configuredOptions.getValueFor(SortingOrder.class))//
-				.with(configuredOptions.getValueFor(SortingDirection.class))//
-				.with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
-				.build();
-		
-		
-		IL1Component bean2 = builder//
-				.with(configuredOptions.getValueFor(SortingOrder.class))//
-				.with(configuredOptions.getValueFor(SortingDirection.class))//
-				.with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
-				.build();
-		
-		Assert.assertSame(bean1, bean2);
-	}
+        Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
 
-	@Test
-	public void testComponent_With_Default() throws InstantiationException, IllegalAccessException {
+        IL1Component bean = builder//
+                .build();
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions//
-				.with(SortingOrder.ALPHABETICALLY)//
-				.with(SortingDirection.ASC)//
-				.with(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "" });
+        Assert.assertNotNull(bean);
 
-		Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
+        LOG.info(bean.printConfiguration());
 
-		IL1Component bean = builder//
-				.build();
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(bean.getConfiguration())));
+    }
 
-		Assert.assertNotNull(bean);
+    @Test
+    public void testComponent_With_GivenDescParent() throws ReflectiveOperationException {
 
-		LOG.info(bean.printConfiguration());
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.DESC)//
+                .with(Configured.GLOBALFIELDS_OPTIONNAME, new String[]{
+                    "_parent"
+                });
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(bean.getConfiguration())));
-	}
+        Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
+
+        IL1Component bean = builder//
+                .with(configuredOptions.getValueFor(SortingOrder.class))//
+                .with(configuredOptions.getValueFor(SortingDirection.class))//
+                .with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
+                .build();
+
+        Assert.assertNotNull(bean);
+
+        LOG.info(bean.printConfiguration());
+
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(bean.getConfiguration())));
+    }
 
 }

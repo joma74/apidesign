@@ -9,82 +9,69 @@ import at.joma.apidesign.component.l1.client.api.config.IOption;
 
 public class Option implements IOption {
 
-	public enum OptionType {
-		ENUM(Enum.class), STRINGARRAY(String[].class);
+    public enum OptionType {
+        ENUM(Enum.class),
+        STRINGARRAY(String[].class);
 
-		final Class<?> type;
+        final Class<?> type;
 
-		OptionType(final Class<?> type) {
-			this.type = type;
-		}
+        OptionType(final Class<?> type) {
+            this.type = type;
+        }
 
-		public Class<?> getType() {
-			return type;
-		}
-	};
+        public Class<?> getType() {
+            return this.type;
+        }
+    };
 
-	public Option(Enum<?> option) {
-		this.name = option.getClass().getSimpleName();
-		this.value = option.name();
-		this.type = OptionType.ENUM;
-	}
+    public final String name;
 
-	public Option(String optionName, String[] optionValue) {
-		this.name = optionName;
-		this.value = Arrays.toString(optionValue);
-		this.type = OptionType.STRINGARRAY;
-	}
+    public final String value;
 
-	public final String name;
+    public final OptionType type;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * at.joma.apidesign.component.l2.client.api.types.IConfiguredOption#getName
-	 * ()
-	 */
-	@Override
-	public String getName() {
-		return name;
-	}
+    public Option(Enum<?> option) {
+        this.name = option.getClass().getSimpleName();
+        this.value = option.name();
+        this.type = OptionType.ENUM;
+    }
 
-	public final String value;
+    public Option(String optionName, String[] optionValue) {
+        this.name = optionName;
+        this.value = Arrays.toString(optionValue);
+        this.type = OptionType.STRINGARRAY;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * at.joma.apidesign.component.l2.client.api.types.IConfiguredOption#getValue
-	 * ()
-	 */
-	@Override
-	public String getValue() {
-		return value;
-	}
+    public String[] convertValueToArray() {
 
-	public final OptionType type;
+        String joinedMinusBrackets = this.value.substring(1, this.value.length() - 1);
 
-	public OptionType getType() {
-		return type;
-	}
+        return joinedMinusBrackets.split(", ");
 
-	public String[] convertValueToArray() {
+    }
 
-		String joinedMinusBrackets = value.substring(1, value.length() - 1);
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
 
-		return joinedMinusBrackets.split(", ");
+    @Override
+    public String getName() {
+        return this.name;
+    }
 
-	}
+    public OptionType getType() {
+        return this.type;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
-	}
+    @Override
+    public String getValue() {
+        return this.value;
+    }
 
-	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
-	}
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
 
 }

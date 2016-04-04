@@ -9,28 +9,30 @@ import at.joma.apidesign.component.l2.client.api.builder.IProviderRequiredOption
 @AsXMLByBuilder
 public class AsXMLWithOptions extends AnnotationLiteral<AsXMLByBuilder> implements AsXMLByBuilder, IProviderRequiredOptions {
 
-	private static final long serialVersionUID = -3254824763865440793L;
+    private static final long serialVersionUID = -3254824763865440793L;
 
-	private Sorting sorting = this.getClass().getAnnotation(AsXMLByBuilder.class).sorting();
+    private Sorting sorting = this.getClass().getAnnotation(AsXMLByBuilder.class).sorting();
 
-	private Omitting omitting = this.getClass().getAnnotation(AsXMLByBuilder.class).ommiting();
+    private Omitting omitting = this.getClass().getAnnotation(AsXMLByBuilder.class).ommiting();
 
-	public void setSortingOption(Sorting sorting) {
-		this.sorting = sorting;
-	}
+    @Override
+    public Omitting ommiting() {
+        return this.omitting;
+    }
 
-	public void setOmittingOption(Omitting ommiting) {
-		this.omitting = ommiting;
-	}
+    @Override
+    public void setOmittingOption(Omitting ommiting) {
+        this.omitting = ommiting;
+    }
 
-	@Override
-	public Sorting sorting() {
-		return sorting;
-	}
+    @Override
+    public void setSortingOption(Sorting sorting) {
+        this.sorting = sorting;
+    }
 
-	@Override
-	public Omitting ommiting() {
-		return omitting;
-	}
+    @Override
+    public Sorting sorting() {
+        return this.sorting;
+    }
 
 }

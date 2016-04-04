@@ -21,97 +21,97 @@ import com.google.common.cache.CacheBuilder;
 @Omitting
 public class ComponentProducer {
 
-	private static Cache<ConfiguredOptionsHolder, Configured> il2componentsCache = CacheBuilder.newBuilder().maximumSize(100).build();
+    public static class Configured implements IL2Component {
 
-	@Produces
-	@AsXMLByBuilder
-	public IL2Component doProduceForBuilder(InjectionPoint ip) throws NoSuchMethodException {
+        public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
 
-		AsXMLByBuilder configuration = (AsXMLByBuilder) ip.getQualifiers().iterator().next();
-		return createWithOptions(configuration.sorting().order(), configuration.sorting().direction(), configuration.ommiting().globalFields());
-	}
+        private ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
 
-	@Produces
-	@AsXML
-	public IL2Component doProduceForCDI(InjectionPoint ip) throws NoSuchMethodException {
+        public Configured(ConfiguredOptionsHolder configuredOptions) {
+            this.configuredOptions = configuredOptions;
+        }
 
-		this.getClass().getAnnotation(Sorting.class).direction();
+        public Configured(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
+            this.configuredOptions.with(orderOption);
+            this.configuredOptions.with(directionOption);
+            this.configuredOptions.with(GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
+        }
 
-		SortingOrder orderOption = this.getClass().getAnnotation(Sorting.class).order();
-		SortingDirection directionOption = this.getClass().getAnnotation(Sorting.class).direction();
-		String[] globalFieldsOption = this.getClass().getAnnotation(Omitting.class).globalFields();
+        @Override
+        public Option[] getConfiguration() {
+            return this.configuredOptions.getConfiguration();
+        }
 
-		Annotated annotated = ip.getAnnotated();
+        @Override
+        public int optionsCount() {
+            return this.configuredOptions.optionsCount();
+        }
 
-		if (annotated != null) {
+        @Override
+        public String printConfiguration() {
+            return this.configuredOptions.printConfiguration();
+        }
 
-			Sorting sortingAnnotation = annotated.getAnnotation(Sorting.class);
+        @Override
+        public String serialize(Object serializable) {
+            return null;
+        }
+    }
 
-			Omitting omittingAnnotation = annotated.getAnnotation(Omitting.class);
+    private static Cache<ConfiguredOptionsHolder, Configured> il2componentsCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
-			if (sortingAnnotation != null) {
-				orderOption = sortingAnnotation.order();
-				directionOption = sortingAnnotation.direction();
-			}
+    private IL2Component createWithOptions(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
 
-			if (omittingAnnotation != null) {
-				globalFieldsOption = omittingAnnotation.globalFields();
-			}
-		}
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions.with(orderOption);
+        configuredOptions.with(directionOption);
+        configuredOptions.with(Configured.GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
 
-		return createWithOptions(orderOption, directionOption, globalFieldsOption);
-	}
+        Configured iL2Component = il2componentsCache.getIfPresent(configuredOptions);
+        if (iL2Component == null) {
+            iL2Component = new Configured(orderOption, directionOption, globalFieldsOption);
+            il2componentsCache.put(configuredOptions, iL2Component);
+        }
+        return iL2Component;
+    }
 
-	private IL2Component createWithOptions(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
+    @Produces
+    @AsXMLByBuilder
+    public IL2Component doProduceForBuilder(InjectionPoint ip) throws NoSuchMethodException {
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions.with(orderOption);
-		configuredOptions.with(directionOption);
-		configuredOptions.with(Configured.GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
+        AsXMLByBuilder configuration = (AsXMLByBuilder) ip.getQualifiers().iterator().next();
+        return createWithOptions(configuration.sorting().order(), configuration.sorting().direction(), configuration.ommiting().globalFields());
+    }
 
-		Configured iL2Component = il2componentsCache.getIfPresent(configuredOptions);
-		if(iL2Component == null){
-			iL2Component = new Configured(orderOption, directionOption, globalFieldsOption);
-			il2componentsCache.put(configuredOptions, iL2Component);
-		}
-		return iL2Component;
-	}
+    @Produces
+    @AsXML
+    public IL2Component doProduceForCDI(InjectionPoint ip) throws NoSuchMethodException {
 
-	public static class Configured implements IL2Component {
+        this.getClass().getAnnotation(Sorting.class).direction();
 
-		public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
+        SortingOrder orderOption = this.getClass().getAnnotation(Sorting.class).order();
+        SortingDirection directionOption = this.getClass().getAnnotation(Sorting.class).direction();
+        String[] globalFieldsOption = this.getClass().getAnnotation(Omitting.class).globalFields();
 
-		public ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        Annotated annotated = ip.getAnnotated();
 
-		public Configured(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
-			this.configuredOptions.with(orderOption);
-			this.configuredOptions.with(directionOption);
-			this.configuredOptions.with(GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
-		}
+        if (annotated != null) {
 
-		public Configured(ConfiguredOptionsHolder configuredOptions) {
-			this.configuredOptions = configuredOptions;
-		}
+            Sorting sortingAnnotation = annotated.getAnnotation(Sorting.class);
 
-		@Override
-		public String serialize(Object serializable) {
-			return null;
-		}
+            Omitting omittingAnnotation = annotated.getAnnotation(Omitting.class);
 
-		@Override
-		public String printConfiguration() {
-			return configuredOptions.printConfiguration();
-		}
+            if (sortingAnnotation != null) {
+                orderOption = sortingAnnotation.order();
+                directionOption = sortingAnnotation.direction();
+            }
 
-		@Override
-		public Option[] getConfiguration() {
-			return configuredOptions.getConfiguration();
-		}
+            if (omittingAnnotation != null) {
+                globalFieldsOption = omittingAnnotation.globalFields();
+            }
+        }
 
-		@Override
-		public int optionsCount() {
-			return configuredOptions.optionsCount();
-		}
-	}
+        return createWithOptions(orderOption, directionOption, globalFieldsOption);
+    }
 
 }
