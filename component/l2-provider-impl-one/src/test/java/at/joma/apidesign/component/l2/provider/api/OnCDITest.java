@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 import at.joma.apidesign.component.l1.client.api.IL1Component;
 import at.joma.apidesign.component.l2.client.api.Omitting;
 import at.joma.apidesign.component.l2.client.api.Sorting;
-import at.joma.apidesign.component.l2.client.api.types.ConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
+import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Configured;
 

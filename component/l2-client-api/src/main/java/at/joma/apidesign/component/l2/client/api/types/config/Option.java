@@ -1,13 +1,13 @@
-package at.joma.apidesign.component.l2.client.api.types;
+package at.joma.apidesign.component.l2.client.api.types.config;
 
 import java.util.Arrays;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import at.joma.apidesign.component.l1.client.api.IConfiguredOption;
+import at.joma.apidesign.component.l1.client.api.config.IOption;
 
-public class ConfiguredOption implements IConfiguredOption {
+public class Option implements IOption {
 
 	public enum OptionType {
 		ENUM(Enum.class), STRINGARRAY(String[].class);
@@ -23,13 +23,13 @@ public class ConfiguredOption implements IConfiguredOption {
 		}
 	};
 
-	public ConfiguredOption(Enum<?> option) {
+	public Option(Enum<?> option) {
 		this.name = option.getClass().getSimpleName();
 		this.value = option.name();
 		this.type = OptionType.ENUM;
 	}
 
-	public ConfiguredOption(String optionName, String[] optionValue) {
+	public Option(String optionName, String[] optionValue) {
 		this.name = optionName;
 		this.value = Arrays.toString(optionValue);
 		this.type = OptionType.STRINGARRAY;

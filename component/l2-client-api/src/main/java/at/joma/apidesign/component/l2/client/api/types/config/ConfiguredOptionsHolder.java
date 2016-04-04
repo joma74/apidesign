@@ -1,4 +1,4 @@
-package at.joma.apidesign.component.l2.client.api.types;
+package at.joma.apidesign.component.l2.client.api.types.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,19 +6,19 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import at.joma.apidesign.component.l1.client.api.IConfigured;
-import at.joma.apidesign.component.l2.client.api.types.ConfiguredOption.OptionType;
+import at.joma.apidesign.component.l1.client.api.config.IConfiguration;
+import at.joma.apidesign.component.l2.client.api.types.config.Option.OptionType;
 
-public class ConfiguredOptionsHolder implements IConfigured {
+public class ConfiguredOptionsHolder implements IConfiguration {
 
 	public static final String MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR = "No configured option for ";
 
 	private static final String TAB = "\t";
 
-	private Map<String, ConfiguredOption> configuredOptions = new HashMap<String, ConfiguredOption>();
+	private Map<String, Option> configuredOptions = new HashMap<String, Option>();
 
 	public <T extends Enum<T>> ConfiguredOptionsHolder with(Enum<T> option) {
-		ConfiguredOption conf = new ConfiguredOption(option);
+		Option conf = new Option(option);
 		configuredOptions.put(conf.name, conf);
 		return this;
 	}
@@ -32,13 +32,13 @@ public class ConfiguredOptionsHolder implements IConfigured {
 		} catch (IllegalArgumentException iae) {
 			// NOP
 		}
-		ConfiguredOption conf = new ConfiguredOption(optionName, optionValue);
+		Option conf = new Option(optionName, optionValue);
 		configuredOptions.put(optionName, conf);
 		return this;
 	}
 
 	public <T extends Enum<T>> T getValueFor(Class<T> enumType) {
-		ConfiguredOption conf = configuredOptions.get(enumType.getSimpleName());
+		Option conf = configuredOptions.get(enumType.getSimpleName());
 		if (conf != null) {
 			return Enum.valueOf(enumType, conf.value);
 		}
@@ -46,7 +46,7 @@ public class ConfiguredOptionsHolder implements IConfigured {
 	}
 
 	public Object getValueFor(String optionName) {
-		ConfiguredOption conf = configuredOptions.get(optionName);
+		Option conf = configuredOptions.get(optionName);
 		if (conf != null) {
 			if (conf.type == OptionType.STRINGARRAY && optionName.equals(conf.name)) {
 				return conf.convertValueToArray();
@@ -59,21 +59,21 @@ public class ConfiguredOptionsHolder implements IConfigured {
 	}
 
 	@Override
-	public ConfiguredOption[] getConfiguration() {
-		return (ConfiguredOption[]) configuredOptions.values().toArray(new ConfiguredOption[] {});
+	public Option[] getConfiguration() {
+		return (Option[]) configuredOptions.values().toArray(new Option[] {});
 	}
 
 	@Override
 	public String printConfiguration() {
 		StringBuilder configuration = new StringBuilder(System.lineSeparator() + "Configuration" + System.lineSeparator());
-		for (ConfiguredOption option : configuredOptions.values()) {
+		for (Option option : configuredOptions.values()) {
 			configuration.append(TAB + option.name + "/" + option.type.getType().getSimpleName() + ":" + option.value + System.lineSeparator());
 		}
 		return configuration.toString();
 	}
 
 	@Override
-	public int size() {
+	public int optionsCount() {
 		return configuredOptions.size();
 	}
 

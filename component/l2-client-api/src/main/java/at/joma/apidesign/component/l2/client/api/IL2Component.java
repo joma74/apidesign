@@ -12,9 +12,9 @@ import at.joma.apidesign.component.l2.client.api.builder.IWithOmitting;
 import at.joma.apidesign.component.l2.client.api.builder.IWithSorting;
 import at.joma.apidesign.component.l2.client.api.builder.options.OmittingOptions;
 import at.joma.apidesign.component.l2.client.api.builder.options.SortingOptions;
-import at.joma.apidesign.component.l2.client.api.types.ConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
+import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
 
 public interface IL2Component extends IL1Component {
 

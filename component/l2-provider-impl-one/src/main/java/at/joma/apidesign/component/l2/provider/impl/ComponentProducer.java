@@ -7,10 +7,10 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import at.joma.apidesign.component.l2.client.api.IL2Component;
 import at.joma.apidesign.component.l2.client.api.Omitting;
 import at.joma.apidesign.component.l2.client.api.Sorting;
-import at.joma.apidesign.component.l2.client.api.types.ConfiguredOption;
-import at.joma.apidesign.component.l2.client.api.types.ConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
+import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
+import at.joma.apidesign.component.l2.client.api.types.config.Option;
 import at.joma.apidesign.component.l2.provider.api.AsXML;
 import at.joma.apidesign.component.l2.provider.api.builder.AsXMLByBuilder;
 
@@ -104,13 +104,13 @@ public class ComponentProducer {
 		}
 
 		@Override
-		public ConfiguredOption[] getConfiguration() {
+		public Option[] getConfiguration() {
 			return configuredOptions.getConfiguration();
 		}
 
 		@Override
-		public int size() {
-			return configuredOptions.size();
+		public int optionsCount() {
+			return configuredOptions.optionsCount();
 		}
 	}
 

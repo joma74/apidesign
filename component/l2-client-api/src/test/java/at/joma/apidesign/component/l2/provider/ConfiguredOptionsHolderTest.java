@@ -3,14 +3,13 @@ package at.joma.apidesign.component.l2.provider;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import at.joma.apidesign.component.l2.client.api.types.ConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
+import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
 
 public class ConfiguredOptionsHolderTest {
 
@@ -36,7 +35,7 @@ public class ConfiguredOptionsHolderTest {
 
 		ConfiguredOptionsHolder configuredOptions = setup_ConfigOptionsHolder_1();
 
-		assertThat(configuredOptions.size(), is(3));
+		assertThat(configuredOptions.optionsCount(), is(3));
 		
 		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
 		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
@@ -62,7 +61,7 @@ public class ConfiguredOptionsHolderTest {
 
 		ConfiguredOptionsHolder configuredOptions = setup_ConfigOptionsHolder_1();
 
-		assertThat(configuredOptions.size(), is(3));
+		assertThat(configuredOptions.optionsCount(), is(3));
 		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
 		assertThat(configuredOptions.getValueFor(SortingDirection.class), is(SortingDirection.DESC));
 		assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(GLOBALFIELDS));
@@ -72,7 +71,7 @@ public class ConfiguredOptionsHolderTest {
 		String[] globalfields_child = new String[] { "_child" };
 		configuredOptions.with(GLOBALFIELDS_OPTIONNAME, globalfields_child);
 		
-		assertThat(configuredOptions.size(), is(3));
+		assertThat(configuredOptions.optionsCount(), is(3));
 		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.ALPHABETICALLY));
 		assertThat(configuredOptions.getValueFor(SortingDirection.class), is(SortingDirection.DESC));
 		assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(globalfields_child));
@@ -85,11 +84,11 @@ public class ConfiguredOptionsHolderTest {
 		thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + SortingDirection.class.getSimpleName());
 
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		assertThat(configuredOptions.size(), is(0));
+		assertThat(configuredOptions.optionsCount(), is(0));
 		
 		configuredOptions.with(SortingOrder.GIVEN);
 
-		assertThat(configuredOptions.size(), is(1));
+		assertThat(configuredOptions.optionsCount(), is(1));
 		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
 		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
 
@@ -103,11 +102,11 @@ public class ConfiguredOptionsHolderTest {
 		thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + GLOBALFIELDS_OPTIONNAME);
 
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		assertThat(configuredOptions.size(), is(0));
+		assertThat(configuredOptions.optionsCount(), is(0));
 		
 		configuredOptions.with(SortingOrder.GIVEN);
 		
-		assertThat(configuredOptions.size(), is(1));
+		assertThat(configuredOptions.optionsCount(), is(1));
 		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(SortingOrder.GIVEN));
 		assertThat(configuredOptions.getValueFor(SortingOrder.class), is(not(SortingOrder.ALPHABETICALLY)));
 
