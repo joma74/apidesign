@@ -55,12 +55,39 @@ public class OnBuilderTest {
 				.with(configuredOptions.getValueFor(SortingDirection.class))//
 				.with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
 				.build();
-
+		
 		Assert.assertNotNull(bean);
 
 		LOG.info(bean.printConfiguration());
 
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(bean.getConfiguration())));
+	}
+	
+	@Test
+	public void testComponent_ForSameness() throws InstantiationException, IllegalAccessException {
+
+		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+		configuredOptions//
+				.with(SortingOrder.GIVEN)//
+				.with(SortingDirection.DESC)//
+				.with(Configured.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+
+		Builder<AsXMLWithOptions> builder = new Builder<AsXMLWithOptions>(AsXMLWithOptions.class);
+
+		IL1Component bean1 = builder//
+				.with(configuredOptions.getValueFor(SortingOrder.class))//
+				.with(configuredOptions.getValueFor(SortingDirection.class))//
+				.with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
+				.build();
+		
+		
+		IL1Component bean2 = builder//
+				.with(configuredOptions.getValueFor(SortingOrder.class))//
+				.with(configuredOptions.getValueFor(SortingDirection.class))//
+				.with((String[]) configuredOptions.getValueFor(Configured.GLOBALFIELDS_OPTIONNAME))//
+				.build();
+		
+		Assert.assertSame(bean1, bean2);
 	}
 
 	@Test

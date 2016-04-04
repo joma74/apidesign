@@ -14,13 +14,19 @@ import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.provider.api.AsXML;
 import at.joma.apidesign.component.l2.provider.api.builder.AsXMLByBuilder;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 @Sorting
 @Omitting
 public class ComponentProducer {
 
+	private static Cache<ConfiguredOptionsHolder, Configured> il2componentsCache = CacheBuilder.newBuilder().maximumSize(100).build();
+
 	@Produces
 	@AsXMLByBuilder
 	public IL2Component doProduceForBuilder(InjectionPoint ip) throws NoSuchMethodException {
+
 		AsXMLByBuilder configuration = (AsXMLByBuilder) ip.getQualifiers().iterator().next();
 		return createWithOptions(configuration.sorting().order(), configuration.sorting().direction(), configuration.ommiting().globalFields());
 	}
@@ -57,8 +63,17 @@ public class ComponentProducer {
 	}
 
 	private IL2Component createWithOptions(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
-		Configured iL2Component = new Configured(orderOption, directionOption, globalFieldsOption);
 
+		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+		configuredOptions.with(orderOption);
+		configuredOptions.with(directionOption);
+		configuredOptions.with(Configured.GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
+
+		Configured iL2Component = il2componentsCache.getIfPresent(configuredOptions);
+		if(iL2Component == null){
+			iL2Component = new Configured(orderOption, directionOption, globalFieldsOption);
+			il2componentsCache.put(configuredOptions, iL2Component);
+		}
 		return iL2Component;
 	}
 
@@ -67,11 +82,15 @@ public class ComponentProducer {
 		public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
 
 		public ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		
-		public Configured(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption){
+
+		public Configured(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
 			this.configuredOptions.with(orderOption);
 			this.configuredOptions.with(directionOption);
 			this.configuredOptions.with(GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
+		}
+
+		public Configured(ConfiguredOptionsHolder configuredOptions) {
+			this.configuredOptions = configuredOptions;
 		}
 
 		@Override

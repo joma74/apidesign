@@ -1,8 +1,8 @@
 package at.joma.apidesign.component.l2.provider;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
+
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,6 +46,15 @@ public class ConfiguredOptionsHolderTest {
 		assertThat(configuredOptions.getValueFor(SortingDirection.class), is(not(SortingDirection.NONE)));
 
 		assertThat((String[]) configuredOptions.getValueFor(GLOBALFIELDS_OPTIONNAME), is(GLOBALFIELDS));
+	}
+	
+	@Test
+	public void testTwoEqualConfigurationsAreEqual() {
+
+		ConfiguredOptionsHolder configuredOptions_a = setup_ConfigOptionsHolder_1();
+		ConfiguredOptionsHolder configuredOptions_b = setup_ConfigOptionsHolder_1();
+
+		assertThat(configuredOptions_a, is(equalTo(configuredOptions_b)));
 	}
 	
 	@Test

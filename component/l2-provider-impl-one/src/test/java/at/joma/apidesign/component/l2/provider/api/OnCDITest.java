@@ -47,12 +47,16 @@ public class OnCDITest {
 
 	@Inject
 	@AsXML
+	IL1Component asXmlDefaultSame;
+
+	@Inject
+	@AsXML
 	@Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
 	@Omitting(globalFields = { "_parent" })
 	IL1Component asXmlGiven;
 
 	@Test
-	public void testAsXmlDefault() {
+	public void testDefaultSettings() {
 
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
 		configuredOptions//
@@ -64,12 +68,12 @@ public class OnCDITest {
 		Assert.assertNotNull(asXmlDefault);
 
 		LOG.info(asXmlDefault.printConfiguration());
-		
+
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(asXmlDefault.getConfiguration())));
 	}
 
 	@Test
-	public void testAsXmlGiven() {
+	public void testGivenSettings() {
 
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
 		configuredOptions//
@@ -83,6 +87,12 @@ public class OnCDITest {
 		LOG.info(asXmlGiven.printConfiguration());
 
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(asXmlGiven.getConfiguration())));
+	}
+
+	@Test
+	public void testForSameness() {
+		
+		Assert.assertSame(asXmlDefault, asXmlDefaultSame);
 	}
 
 }
