@@ -35,7 +35,7 @@ public class ConfiguredOptionsHolderTest {
     }
 
     @Test
-    public void testConfigurationAllSet() {
+    public void test_AllSetable() {
 
         ConfiguredOptionsHolder configuredOptions = setup_ConfigOptionsHolder_1();
 
@@ -52,7 +52,7 @@ public class ConfiguredOptionsHolderTest {
     }
 
     @Test
-    public void testConfigurationNoDirection() {
+    public void test_Given_LeftOutDirection_When_getValueFor_Then_IllegalArgumentException() {
 
         this.thrown.expect(IllegalArgumentException.class);
         this.thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + SortingDirection.class.getSimpleName());
@@ -70,7 +70,7 @@ public class ConfiguredOptionsHolderTest {
     }
 
     @Test
-    public void testConfigurationNoGlobal() {
+    public void test_Given_LeftOutGlobal_When_getValueFor_Then_IllegalArgumentException() {
 
         this.thrown.expect(IllegalArgumentException.class);
         this.thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + GLOBALFIELDS_OPTIONNAME);
@@ -88,7 +88,7 @@ public class ConfiguredOptionsHolderTest {
     }
 
     @Test
-    public void testConfigurationOnSecondTime() {
+    public void test_When_SecondTime_Then_OverwritesFirstTime() {
 
         ConfiguredOptionsHolder configuredOptions = setup_ConfigOptionsHolder_1();
 
@@ -111,7 +111,7 @@ public class ConfiguredOptionsHolderTest {
     }
 
     @Test
-    public void testTwoEqualConfigurationsAreEqual() {
+    public void test_Given_TwoEqualConfigurations_Then_AreEqual() {
 
         ConfiguredOptionsHolder configuredOptions_a = setup_ConfigOptionsHolder_1();
         ConfiguredOptionsHolder configuredOptions_b = setup_ConfigOptionsHolder_1();
