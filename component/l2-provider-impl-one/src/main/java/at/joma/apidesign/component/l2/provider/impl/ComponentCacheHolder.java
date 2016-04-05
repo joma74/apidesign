@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
-import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Configured;
+import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Component;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -22,7 +22,7 @@ public class ComponentCacheHolder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CDI_NAME);
 
-	private Cache<ConfiguredOptionsHolder, Configured> l2componentsCache;
+	private Cache<ConfiguredOptionsHolder, Component> l2componentsCache;
 
 	@SuppressWarnings("rawtypes")
 	private final CacheBuilder cacheBuilder = CacheBuilder.newBuilder();
@@ -33,7 +33,7 @@ public class ComponentCacheHolder {
 		l2componentsCache = cacheBuilder.weakValues().maximumSize(50).recordStats().build();
 	}
 
-	public Cache<ConfiguredOptionsHolder, Configured> getCache() {
+	public Cache<ConfiguredOptionsHolder, Component> getCache() {
 		return l2componentsCache;
 	}
 
@@ -47,11 +47,11 @@ public class ComponentCacheHolder {
 		}
 	}
 
-	public Configured getIfPresent(ConfiguredOptionsHolder configuredOptions) {
+	public Component getIfPresent(ConfiguredOptionsHolder configuredOptions) {
 		return l2componentsCache.getIfPresent(configuredOptions);
 	}
 
-	public void put(ConfiguredOptionsHolder configuredOptions, Configured iL2Component) {
+	public void put(ConfiguredOptionsHolder configuredOptions, Component iL2Component) {
 		l2componentsCache.put(configuredOptions, iL2Component);
 	}
 

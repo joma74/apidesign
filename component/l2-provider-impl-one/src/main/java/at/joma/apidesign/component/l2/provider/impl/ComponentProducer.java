@@ -27,17 +27,17 @@ public class ComponentProducer {
 	@Named(ComponentCacheHolder.CDI_NAME)
 	private ComponentCacheHolder il2componentCacheHolder;
 
-	public static class Configured implements IL2Component {
+	public static class Component implements IL2Component {
 
 		public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
 
 		private WeakReference<ConfiguredOptionsHolder> configuredOptions = new WeakReference<ConfiguredOptionsHolder>(new ConfiguredOptionsHolder());
 
-		public Configured(ConfiguredOptionsHolder configuredOptions) {
+		public Component(ConfiguredOptionsHolder configuredOptions) {
 			this.configuredOptions = new WeakReference<ConfiguredOptionsHolder>(new ConfiguredOptionsHolder());
 		}
 
-		public Configured(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
+		public Component(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
 			this.configuredOptions.get().with(orderOption);
 			this.configuredOptions.get().with(directionOption);
 			this.configuredOptions.get().with(GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
@@ -74,11 +74,11 @@ public class ComponentProducer {
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
 		configuredOptions.with(orderOption);
 		configuredOptions.with(directionOption);
-		configuredOptions.with(Configured.GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
+		configuredOptions.with(Component.GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
 
-		Configured iL2Component = il2componentCacheHolder.getIfPresent(configuredOptions);
+		Component iL2Component = il2componentCacheHolder.getIfPresent(configuredOptions);
 		if (iL2Component == null) {
-			iL2Component = new Configured(orderOption, directionOption, globalFieldsOption);
+			iL2Component = new Component(orderOption, directionOption, globalFieldsOption);
 			il2componentCacheHolder.put(configuredOptions, iL2Component);
 		}
 		return iL2Component;
@@ -96,8 +96,6 @@ public class ComponentProducer {
 	@AsXML
 	public IL2Component doProduceForCDI(InjectionPoint ip) throws NoSuchMethodException {
 
-		this.getClass().getAnnotation(Sorting.class).direction();
-
 		SortingOrder orderOption = this.getClass().getAnnotation(Sorting.class).order();
 		SortingDirection directionOption = this.getClass().getAnnotation(Sorting.class).direction();
 		String[] globalFieldsOption = this.getClass().getAnnotation(Omitting.class).globalFields();
@@ -107,7 +105,7 @@ public class ComponentProducer {
 		if (annotated != null) {
 
 			Sorting sortingAnnotation = annotated.getAnnotation(Sorting.class);
-
+			
 			Omitting omittingAnnotation = annotated.getAnnotation(Omitting.class);
 
 			if (sortingAnnotation != null) {

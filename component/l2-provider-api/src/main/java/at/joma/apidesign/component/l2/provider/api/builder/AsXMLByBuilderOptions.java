@@ -7,7 +7,7 @@ import at.joma.apidesign.component.l2.client.api.Sorting;
 import at.joma.apidesign.component.l2.client.api.builder.IRequiredProviderOptions;
 
 @AsXMLByBuilder
-public class AsXMLWithOptions extends AnnotationLiteral<AsXMLByBuilder> implements AsXMLByBuilder, IRequiredProviderOptions {
+public class AsXMLByBuilderOptions extends AnnotationLiteral<AsXMLByBuilder> implements AsXMLByBuilder, IRequiredProviderOptions {
 
     private static final long serialVersionUID = -3254824763865440793L;
 

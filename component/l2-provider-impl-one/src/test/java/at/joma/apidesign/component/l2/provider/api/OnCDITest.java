@@ -24,7 +24,7 @@ import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
-import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Configured;
+import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Component;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses({
@@ -68,7 +68,7 @@ public class OnCDITest {
         configuredOptions//
                 .with(SortingOrder.ALPHABETICALLY)//
                 .with(SortingDirection.ASC)//
-                .with(Configured.GLOBALFIELDS_OPTIONNAME, new String[]{})//
+                .with(Component.GLOBALFIELDS_OPTIONNAME, new String[]{})//
         ;
 
         Assert.assertNotNull(this.asXmlDefault);
@@ -91,7 +91,7 @@ public class OnCDITest {
         configuredOptions//
                 .with(SortingOrder.GIVEN)//
                 .with(SortingDirection.NONE)//
-                .with(Configured.GLOBALFIELDS_OPTIONNAME, new String[]{
+                .with(Component.GLOBALFIELDS_OPTIONNAME, new String[]{
                     "_parent"
                 })//
         ;

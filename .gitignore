@@ -12,3 +12,5 @@ org.eclipse.*
 .project
 .settings/
 /.travis.yml~
+/apidesign.vpp~15
+/apidesign.vpp~16
