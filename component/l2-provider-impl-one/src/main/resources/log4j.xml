@@ -8,6 +8,9 @@
 			<param name="ConversionPattern" value="%-5p %c - %m%n" />
 		</layout>
 	</appender>
+	<category name="at.joma.apidesign.component.l2.provider.cache">
+		<priority value="debug"></priority>
+	</category>
 	<category name="org.jglue.cdiunit">
 		<priority value="debug"></priority>
 	</category>
