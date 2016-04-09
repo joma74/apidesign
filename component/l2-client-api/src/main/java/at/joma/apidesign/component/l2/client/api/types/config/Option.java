@@ -13,7 +13,7 @@ public class Option implements IOption, Serializable {
 	private static final long serialVersionUID = 5979614171013169677L;
 
 	public enum OptionType {
-		ENUM(Enum.class), STRINGARRAY(String[].class);
+		ENUM(Enum.class), STRINGARRAY(String[].class), STRING(String.class);
 
 		final Class<?> type;
 
@@ -42,6 +42,12 @@ public class Option implements IOption, Serializable {
 		this.name = optionName;
 		this.value = Arrays.toString(optionValue);
 		this.type = OptionType.STRINGARRAY;
+	}
+	
+	public Option(String optionName, String optionValue) {
+		this.name = optionName;
+		this.value = optionValue;
+		this.type = OptionType.STRING;
 	}
 
 	public String[] convertValueToArray() {

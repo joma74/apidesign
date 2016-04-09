@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -20,7 +22,7 @@ import at.joma.apidesign.component.l2.client.api.types.config.Option.OptionType;
 public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 
 	private static final long serialVersionUID = 7863290157676465486L;
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(ConfiguredOptionsHolder.class);
 
 	public static final String MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR = "No configured option for ";
@@ -29,13 +31,15 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 
 	private final Map<String, Option> configuredOptions = new HashMap<>();
 
+	private Map<String, String> formatInfos = new HashMap<>();
+
 	@Override
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	@Override
-	public Option[] getConfiguration() {
+	public Option[] getOptions() {
 		return this.configuredOptions.values().toArray(new Option[] {});
 	}
 
@@ -72,11 +76,22 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 
 	@Override
 	public String printConfiguration() {
-		StringBuilder configuration = new StringBuilder(System.lineSeparator() + "Configuration" + System.lineSeparator());
+		StringBuilder configuration = new StringBuilder(System.lineSeparator());
+		configuration.append("Configuration" + System.lineSeparator());
+		for (Entry<String, String> formatInfo : formatInfos.entrySet()) {
+			configuration.append(TAB + formatInfo.getKey() + ":" + formatInfo.getValue() + System.lineSeparator());
+		}
+		configuration.append(TAB + "Options" + System.lineSeparator());
 		for (Option option : this.configuredOptions.values()) {
-			configuration.append(TAB + option.name + "/" + option.type.getType().getSimpleName() + ":" + option.value + System.lineSeparator());
+			configuration.append(TAB + TAB + option.name + "/" + option.type.getType().getSimpleName() + ":" + option.value + System.lineSeparator());
 		}
 		return configuration.toString();
+	}
+
+	@Override
+	public Map<String, String> getFormatInfo() {
+
+		return Collections.unmodifiableMap(formatInfos);
 	}
 
 	@Override
@@ -110,4 +125,13 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 		return this;
 	}
 
+	public ConfiguredOptionsHolder setFormatInfos(Map<String, String> formatInfos) {
+		this.formatInfos = formatInfos;
+		return this;
+	}
+	
+	public ConfiguredOptionsHolder setFormatInfo(String formatInfoKey, String formatInfoValue) {
+		this.formatInfos.put(formatInfoKey, formatInfoValue);
+		return this;
+	}
 }

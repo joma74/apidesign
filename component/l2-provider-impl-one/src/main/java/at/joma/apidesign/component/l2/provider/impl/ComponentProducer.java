@@ -1,6 +1,8 @@
 package at.joma.apidesign.component.l2.provider.impl;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
@@ -27,25 +29,46 @@ public class ComponentProducer {
 	@Named(ComponentCacheHolder.CDI_NAME)
 	private ComponentCacheHolder il2componentCacheHolder;
 
+	public static final Map<String, String> FORMATINFOS = new HashMap<>();
+
+	static {
+		FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_FORMAT, "XML");
+		FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_PRODUCER, ComponentProducer.class.getName());
+	}
+
 	public static class Component implements IL2Component {
 
 		public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
 
+		private static final String FORMATTER_INFO_VALUE = "XStream";
+
 		private WeakReference<ConfiguredOptionsHolder> configuredOptions = new WeakReference<ConfiguredOptionsHolder>(new ConfiguredOptionsHolder());
 
 		public Component(ConfiguredOptionsHolder configuredOptions) {
-			this.configuredOptions = new WeakReference<ConfiguredOptionsHolder>(new ConfiguredOptionsHolder());
+			configuredOptions//
+					.setFormatInfo(IConfiguration.FORMATINFO_KEY_FORMATTER, FORMATTER_INFO_VALUE)//
+			;
+			this.configuredOptions = new WeakReference<ConfiguredOptionsHolder>(configuredOptions);
 		}
 
-		public Component(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
-			this.configuredOptions.get().with(orderOption);
-			this.configuredOptions.get().with(directionOption);
-			this.configuredOptions.get().with(GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
+		public Component(Map<String, String> formatInfos, SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
+			this.configuredOptions.get()//
+					.setFormatInfo(IConfiguration.FORMATINFO_KEY_FORMATTER, FORMATTER_INFO_VALUE)//
+					.setFormatInfos(formatInfos)//
+					.with(orderOption)//
+					.with(directionOption)//
+					.with(GLOBALFIELDS_OPTIONNAME, globalFieldsOption)//
+			;
 		}
 
 		@Override
-		public Option[] getConfiguration() {
-			return this.configuredOptions.get().getConfiguration();
+		public Option[] getOptions() {
+			return this.configuredOptions.get().getOptions();
+		}
+
+		@Override
+		public Map<String, String> getFormatInfo() {
+			return this.configuredOptions.get().getFormatInfo();
 		}
 
 		@Override
@@ -69,16 +92,18 @@ public class ComponentProducer {
 		}
 	}
 
-	private IL2Component createWithOptions(SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
+	private IL2Component createWithOptions(Map<String, String> formatInfos, SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions.with(orderOption);
-		configuredOptions.with(directionOption);
-		configuredOptions.with(Component.GLOBALFIELDS_OPTIONNAME, globalFieldsOption);
+		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
+				.setFormatInfos(FORMATINFOS)//
+				.with(orderOption)//
+				.with(directionOption)//
+				.with(Component.GLOBALFIELDS_OPTIONNAME, globalFieldsOption)//
+		;
 
 		Component iL2Component = il2componentCacheHolder.getIfPresent(configuredOptions);
 		if (iL2Component == null) {
-			iL2Component = new Component(orderOption, directionOption, globalFieldsOption);
+			iL2Component = new Component(configuredOptions);
 			il2componentCacheHolder.put(configuredOptions, iL2Component);
 		}
 		return iL2Component;
@@ -89,7 +114,7 @@ public class ComponentProducer {
 	public IL2Component doProduceForBuilder(InjectionPoint ip) throws NoSuchMethodException {
 
 		AsXMLByBuilder configuration = (AsXMLByBuilder) ip.getQualifiers().iterator().next();
-		return createWithOptions(configuration.sorting().order(), configuration.sorting().direction(), configuration.ommiting().globalFields());
+		return createWithOptions(FORMATINFOS, configuration.sorting().order(), configuration.sorting().direction(), configuration.ommiting().globalFields());
 	}
 
 	@Produces
@@ -105,7 +130,7 @@ public class ComponentProducer {
 		if (annotated != null) {
 
 			Sorting sortingAnnotation = annotated.getAnnotation(Sorting.class);
-			
+
 			Omitting omittingAnnotation = annotated.getAnnotation(Omitting.class);
 
 			if (sortingAnnotation != null) {
@@ -118,7 +143,7 @@ public class ComponentProducer {
 			}
 		}
 
-		return createWithOptions(orderOption, directionOption, globalFieldsOption);
+		return createWithOptions(FORMATINFOS, orderOption, directionOption, globalFieldsOption);
 	}
 
 }

@@ -83,8 +83,10 @@ public class OnBuilderTest {
 		Assert.assertNotNull(bean);
 
 		LOG.info(bean.printConfiguration());
+		
+		Assert.assertEquals(ComponentProducer.FORMATINFOS, bean.getFormatInfo());
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(bean.getConfiguration())));
+		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
 	}
 
 	@Test
@@ -94,6 +96,7 @@ public class OnBuilderTest {
 				.with(SortingOrder.GIVEN)//
 				.with(SortingDirection.NONE)//
 				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+		
 		IL1Component bean = new Builder<>(AsXMLByBuilderOptions.class)//
 				.with(configuredOptions)//
 				.build();
@@ -102,6 +105,8 @@ public class OnBuilderTest {
 
 		LOG.info(bean.printConfiguration());
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getConfiguration()), Arrays.asList(bean.getConfiguration())));
+		Assert.assertEquals(ComponentProducer.FORMATINFOS, bean.getFormatInfo());
+		
+		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
 	}
 }
