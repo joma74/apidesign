@@ -1,4 +1,4 @@
-package at.joma.apidesign.component.l2.provider;
+package at.joma.apidesign.component.l2.client.api.types.config;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
