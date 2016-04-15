@@ -3,9 +3,14 @@ package at.joma.apidesign.component.l2.provider.impl;
 import static com.googlecode.cqengine.query.QueryFactory.and;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l1.client.api.config.IConfiguration;
 import at.joma.apidesign.component.l2.client.api.IL2Component;
@@ -15,13 +20,20 @@ import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsH
 import at.joma.apidesign.component.l2.client.api.types.config.Option;
 import at.joma.apidesign.component.l2.provider.api.SelfValidating;
 
+import com.google.common.base.Preconditions;
 import com.googlecode.cqengine.ConcurrentIndexedCollection;
 import com.googlecode.cqengine.IndexedCollection;
 import com.googlecode.cqengine.query.Query;
 import com.googlecode.cqengine.query.QueryFactory;
+import com.thoughtworks.xstream.XStream;
 
 @SelfValidating
 public class Component implements IL2Component {
+
+    /**
+     * Logger to use.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Component.class);
 
     public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
 
@@ -30,7 +42,17 @@ public class Component implements IL2Component {
     protected static final Map<String, String> FORMATINFOS = new HashMap<>();
 
     protected static final IndexedCollection<ValidOptionsTuple> VALIDOPTIONSTUPLES = new ConcurrentIndexedCollection<>();
+    
+    /**
+     * WELD method for supporting unproxying.
+     */
+    private static final String UNPROXY_METHOD_NAME_WELD = "getTargetInstance";
 
+    /**
+     * The to-be-used xStream instance.
+     */
+    private XStream xStream = new XStream();
+    
     static {
         FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_FORMATTER, FORMATINFO_KEY_FORMATTER);
         FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_COMPONENT, Component.class.getName());
@@ -89,7 +111,8 @@ public class Component implements IL2Component {
 
     @Override
     public String serialize(Object serializable) {
-        return null;
+        Preconditions.checkNotNull(serializable);
+        return this.xStream.toXML(unproxyIfWeld(serializable));
     }
 
     @Override
@@ -104,8 +127,35 @@ public class Component implements IL2Component {
 
         Query<ValidOptionsTuple> isValidQuery =
                 and(QueryFactory.in(ValidOptionsTuple.VOT_SORTINGORDER, sortingOrder), QueryFactory.in(ValidOptionsTuple.VOT_SORTINGDIRECTION, sortingDirection));
-        
+
         return VALIDOPTIONSTUPLES.retrieve(isValidQuery).size() >= 1;
+    }
+
+    /**
+     * Unproxying support only the WELD implementation of CDI.
+     * <p>
+     * IMPLEMENTATION REMARK
+     * <p>
+     * MUST never fail
+     * 
+     * @param object
+     *            to unproxy
+     * @return a potentially unproxied object
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T unproxyIfWeld(final Object object) {
+        Method theMethod = null;
+        try {
+            theMethod = object.getClass().getDeclaredMethod(UNPROXY_METHOD_NAME_WELD);
+        } catch (NoSuchMethodException e) {
+            LOG.trace("ignored exception", e);
+        }
+
+        try {
+            return theMethod == null ? (T) object : (T) theMethod.invoke(object);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Error while trying to unproxy " + object, e);
+        }
     }
 
 }

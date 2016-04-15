@@ -45,7 +45,7 @@ public class ClientTest {
     public void testComponent() {
         Assert.assertNotNull(this.asXmlDefault);
 
-        this.asXmlDefault.serialize(null);
+        LOG.info(this.asXmlDefault.serialize("1234"));
 
         LOG.info(this.asXmlDefault.toString());
     }
