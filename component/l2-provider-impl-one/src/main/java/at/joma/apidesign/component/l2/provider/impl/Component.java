@@ -11,7 +11,9 @@ import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
 import at.joma.apidesign.component.l2.client.api.types.config.Option;
+import at.joma.apidesign.component.l2.provider.api.SelfValidating;
 
+@SelfValidating
 public class Component implements IL2Component {
 
     public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
@@ -28,9 +30,8 @@ public class Component implements IL2Component {
     private WeakReference<ConfiguredOptionsHolder> configuredOptions = new WeakReference<ConfiguredOptionsHolder>(new ConfiguredOptionsHolder());
 
     public Component(ConfiguredOptionsHolder configuredOptions) {
-        ConfiguredOptionsHolder clone = (ConfiguredOptionsHolder) configuredOptions.deepClone();
-        encloseFormatInfo(clone);
-        this.configuredOptions = new WeakReference<ConfiguredOptionsHolder>(clone);
+        encloseFormatInfo(configuredOptions);
+        this.configuredOptions = new WeakReference<ConfiguredOptionsHolder>(configuredOptions);
     }
 
     public Component(Map<String, String> formatInfos, SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
@@ -81,5 +82,10 @@ public class Component implements IL2Component {
     @Override
     public IConfiguration deepClone() {
         return this.configuredOptions.get().deepClone();
+    }
+
+    @Override
+    public boolean isValid() {
+        return true;
     }
 }

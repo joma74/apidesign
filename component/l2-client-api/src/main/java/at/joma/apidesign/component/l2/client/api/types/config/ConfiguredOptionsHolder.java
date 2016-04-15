@@ -31,7 +31,7 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 
     private final Map<String, Option> configuredOptions = new TreeMap<>();
 
-    private Map<String, String> formatInfos = new TreeMap<>();
+    private final Map<String, String> formatInfos = new TreeMap<>();
 
     @Override
     public boolean equals(Object obj) {
