@@ -1,6 +1,8 @@
 package at.joma.apidesign.component.l2.provider.api.builder;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.collections4.ListUtils;
 import org.jglue.cdiunit.AdditionalClasses;
@@ -84,7 +86,11 @@ public class OnBuilderTest {
 
 		LOG.info(bean.printConfiguration());
 		
-		Assert.assertEquals(ComponentProducer.FORMATINFOS, bean.getFormatInfo());
+		Map<String, String> formatInfos_Expected = new HashMap<>();
+		formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
+		formatInfos_Expected.putAll(Component.getFormatInfos());
+		
+		Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
 
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
 	}
@@ -105,7 +111,11 @@ public class OnBuilderTest {
 
 		LOG.info(bean.printConfiguration());
 
-		Assert.assertEquals(ComponentProducer.FORMATINFOS, bean.getFormatInfo());
+		Map<String, String> formatInfos_Expected = new HashMap<>();
+        formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
+        formatInfos_Expected.putAll(Component.getFormatInfos());
+        
+        Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
 		
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
 	}

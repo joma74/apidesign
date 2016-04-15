@@ -4,6 +4,7 @@ import java.util.Map;
 
 public interface IConfiguration {
 
+    public static final String FORMATINFO_KEY_COMPONENT = "Component";
 	public static final String FORMATINFO_KEY_FORMAT = "Format";
 	public static final String FORMATINFO_KEY_PRODUCER = "Producer";
 	public static final String FORMATINFO_KEY_FORMATTER = "Formatter";
