@@ -1,5 +1,7 @@
 package at.joma.apidesign.component.l2.provider.impl;
 
+import static com.googlecode.cqengine.query.QueryFactory.and;
+
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +15,11 @@ import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsH
 import at.joma.apidesign.component.l2.client.api.types.config.Option;
 import at.joma.apidesign.component.l2.provider.api.SelfValidating;
 
+import com.googlecode.cqengine.ConcurrentIndexedCollection;
+import com.googlecode.cqengine.IndexedCollection;
+import com.googlecode.cqengine.query.Query;
+import com.googlecode.cqengine.query.QueryFactory;
+
 @SelfValidating
 public class Component implements IL2Component {
 
@@ -22,16 +29,22 @@ public class Component implements IL2Component {
 
     protected static final Map<String, String> FORMATINFOS = new HashMap<>();
 
+    protected static final IndexedCollection<ValidOptionsTuple> RULESTABLE = new ConcurrentIndexedCollection<>();
+
     static {
         FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_FORMATTER, FORMATINFO_KEY_FORMATTER);
         FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_COMPONENT, Component.class.getName());
+
+        RULESTABLE.add(new ValidOptionsTuple(SortingOrder.ALPHABETICALLY, SortingDirection.ASC));
+        RULESTABLE.add(new ValidOptionsTuple(SortingOrder.ALPHABETICALLY, SortingDirection.DESC));
+        RULESTABLE.add(new ValidOptionsTuple(SortingOrder.GIVEN, SortingDirection.NONE));
     }
 
-    private WeakReference<ConfiguredOptionsHolder> configuredOptions = new WeakReference<ConfiguredOptionsHolder>(new ConfiguredOptionsHolder());
+    private WeakReference<ConfiguredOptionsHolder> configuredOptions = new WeakReference<>(new ConfiguredOptionsHolder());
 
     public Component(ConfiguredOptionsHolder configuredOptions) {
         encloseFormatInfo(configuredOptions);
-        this.configuredOptions = new WeakReference<ConfiguredOptionsHolder>(configuredOptions);
+        this.configuredOptions = new WeakReference<>(configuredOptions);
     }
 
     public Component(Map<String, String> formatInfos, SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
@@ -86,6 +99,13 @@ public class Component implements IL2Component {
 
     @Override
     public boolean isValid() {
-        return true;
+        SortingOrder sortingOrder = configuredOptions.get().getValueFor(SortingOrder.class);
+        SortingDirection sortingDirection = configuredOptions.get().getValueFor(SortingDirection.class);
+
+        Query<ValidOptionsTuple> checkConformsQuery =
+                and(QueryFactory.in(ValidOptionsTuple.RULETUPLE_SORTINGORDER, sortingOrder), QueryFactory.in(ValidOptionsTuple.RULETUPLE_SORTINGDIRECTION, sortingDirection));
+        
+        return RULESTABLE.retrieve(checkConformsQuery).size() == 1;
     }
+
 }

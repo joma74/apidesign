@@ -48,7 +48,7 @@ public class OnBuilderTest {
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
 		configuredOptions//
 				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.DESC)//
+				.with(SortingDirection.NONE)//
 				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
 
 		Builder<AsXMLByBuilderOptions> builder = new Builder<>(AsXMLByBuilderOptions.class);
