@@ -29,15 +29,15 @@ public class Component implements IL2Component {
 
     protected static final Map<String, String> FORMATINFOS = new HashMap<>();
 
-    protected static final IndexedCollection<ValidOptionsTuple> RULESTABLE = new ConcurrentIndexedCollection<>();
+    protected static final IndexedCollection<ValidOptionsTuple> VALIDOPTIONSTUPLES = new ConcurrentIndexedCollection<>();
 
     static {
         FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_FORMATTER, FORMATINFO_KEY_FORMATTER);
         FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_COMPONENT, Component.class.getName());
 
-        RULESTABLE.add(new ValidOptionsTuple(SortingOrder.ALPHABETICALLY, SortingDirection.ASC));
-        RULESTABLE.add(new ValidOptionsTuple(SortingOrder.ALPHABETICALLY, SortingDirection.DESC));
-        RULESTABLE.add(new ValidOptionsTuple(SortingOrder.GIVEN, SortingDirection.NONE));
+        VALIDOPTIONSTUPLES.add(new ValidOptionsTuple(SortingOrder.ALPHABETICALLY, SortingDirection.ASC));
+        VALIDOPTIONSTUPLES.add(new ValidOptionsTuple(SortingOrder.ALPHABETICALLY, SortingDirection.DESC));
+        VALIDOPTIONSTUPLES.add(new ValidOptionsTuple(SortingOrder.GIVEN, SortingDirection.NONE));
     }
 
     private WeakReference<ConfiguredOptionsHolder> configuredOptions = new WeakReference<>(new ConfiguredOptionsHolder());
@@ -102,10 +102,10 @@ public class Component implements IL2Component {
         SortingOrder sortingOrder = configuredOptions.get().getValueFor(SortingOrder.class);
         SortingDirection sortingDirection = configuredOptions.get().getValueFor(SortingDirection.class);
 
-        Query<ValidOptionsTuple> checkConformsQuery =
-                and(QueryFactory.in(ValidOptionsTuple.RULETUPLE_SORTINGORDER, sortingOrder), QueryFactory.in(ValidOptionsTuple.RULETUPLE_SORTINGDIRECTION, sortingDirection));
+        Query<ValidOptionsTuple> isValidQuery =
+                and(QueryFactory.in(ValidOptionsTuple.VOT_SORTINGORDER, sortingOrder), QueryFactory.in(ValidOptionsTuple.VOT_SORTINGDIRECTION, sortingDirection));
         
-        return RULESTABLE.retrieve(checkConformsQuery).size() == 1;
+        return VALIDOPTIONSTUPLES.retrieve(isValidQuery).size() >= 1;
     }
 
 }
