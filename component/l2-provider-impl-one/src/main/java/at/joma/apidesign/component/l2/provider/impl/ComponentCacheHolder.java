@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
-import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Component;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

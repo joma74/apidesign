@@ -23,8 +23,8 @@ import at.joma.apidesign.component.l2.client.api.Sorting;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
+import at.joma.apidesign.component.l2.provider.impl.Component;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
-import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Component;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses({

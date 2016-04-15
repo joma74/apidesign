@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
-import at.joma.apidesign.component.l2.provider.impl.ComponentProducer.Component;
 
 @RunWith(CdiRunner.class)
 public class ComponentCacheHolderTest {
