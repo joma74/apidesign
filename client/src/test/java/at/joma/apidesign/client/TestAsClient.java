@@ -22,9 +22,9 @@ import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 @AdditionalClasses({
     ComponentProducer.class
 })
-public class ClientTest {
+public class TestAsClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClientTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestAsClient.class);
 
     @Inject
     @AsXML
