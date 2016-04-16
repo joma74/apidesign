@@ -1,5 +1,5 @@
 language: java
 after_success:
-  - mvn jacoco:report coveralls:report
+  - mvn cobertura:cobertura coveralls:report
 jdk:
   - oraclejdk8
