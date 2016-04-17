@@ -109,9 +109,9 @@
 				<version>3.1.0</version>
 				<configuration>
 					<jacocoReports>
-						<jacocoReport>
+						<param>
 							${project.basedir}/../coverage-report-all/target/coverage-report/coverage-report.xml
-						</jacocoReport>
+						</param>
 					</jacocoReports>
 				</configuration>
 			</plugin>
