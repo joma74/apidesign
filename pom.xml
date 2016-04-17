@@ -108,7 +108,11 @@
 				<artifactId>coveralls-maven-plugin</artifactId>
 				<version>3.1.0</version>
 				<configuration>
-					<jacocoReports>${project.basedir}/../coverage-report-all/target/coverage-report/coverage-report.xml</jacocoReports>
+					<jacocoReports>
+						<jacocoReport>
+							${project.basedir}/../coverage-report-all/target/coverage-report/coverage-report.xml
+						</jacocoReport>
+					</jacocoReports>
 				</configuration>
 			</plugin>
 			<!-- <plugin> -->
