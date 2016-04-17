@@ -33,7 +33,7 @@
 								</artifactItem>
 							</artifactItems>
 							<stripVersion>true</stripVersion>
-							<outputDirectory>${basedir}/target/jacoco-jars</outputDirectory>
+							<outputDirectory>${project.basedir}/target/jacoco-jars</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -54,19 +54,19 @@
 								<!-- Execute an ant task within maven -->
 								<echo message="Generating JaCoCo Reports" />
 								<taskdef name="report" classname="org.jacoco.ant.ReportTask">
-									<classpath path="${basedir}/target/jacoco-jars/org.jacoco.ant.jar" />
+									<classpath path="${project.basedir}/target/jacoco-jars/org.jacoco.ant.jar" />
 								</taskdef>
-								<mkdir dir="${basedir}/target/coverage-report" />
+								<mkdir dir="${project.basedir}/target/coverage-report" />
 								<report>
 									<executiondata>
-										<fileset dir="${basedir}/../">
+										<fileset dir="${project.basedir}/../">
 											<include name="**/jacoco.exec" />
 										</fileset>
 									</executiondata>
 									<structure name="jacoco-report-all apidesign project">
 										<group name="jacoco-report-all apidesign">
 											<classfiles>
-												<fileset dir="${basedir}/../">
+												<fileset dir="${project.basedir}/../">
 													<!-- *Test*.class because to math classes like OnCDITest$1.b4ffe689eb02a4c2.class -->
 													<exclude name="**/target/jacoco-classes-dump/**/*Test*.class" />
 													<include name="**/target/jacoco-classes-dump/**/*.class" />
@@ -74,24 +74,24 @@
 											</classfiles>
 											<sourcefiles encoding="UTF-8">
 												<!-- Unfortunately the source files must be dir rooted with the java root package path -->
-												<fileset dir="${basedir}/../client/src/main/java" />
-												<fileset dir="${basedir}/../client/src/test/java" />
-												<fileset dir="${basedir}/../component/l1-client-api/src/main/java" />
-												<fileset dir="${basedir}/../component/l1-client-api/src/test/java" />
-												<fileset dir="${basedir}/../component/l2-client-api/src/main/java" />
-												<fileset dir="${basedir}/../component/l2-client-api/src/test/java" />
-												<fileset dir="${basedir}/../component/l2-provider-api/src/main/java" />
-												<fileset dir="${basedir}/../component/l2-provider-api/src/test/java" />
-												<fileset dir="${basedir}/../component/l2-provider-impl-one/src/main/java" />
-												<fileset dir="${basedir}/../component/l2-provider-impl-one/src/test/java" />
-												<fileset dir="${basedir}/../component/l2-provider-impl-two/src/main/java" />
-												<fileset dir="${basedir}/../component/l2-provider-impl-two/src/test/java" />
+												<fileset dir="${project.basedir}/../client/src/main/java" />
+												<fileset dir="${project.basedir}/../client/src/test/java" />
+												<fileset dir="${project.basedir}/../component/l1-client-api/src/main/java" />
+												<fileset dir="${project.basedir}/../component/l1-client-api/src/test/java" />
+												<fileset dir="${project.basedir}/../component/l2-client-api/src/main/java" />
+												<fileset dir="${project.basedir}/../component/l2-client-api/src/test/java" />
+												<fileset dir="${project.basedir}/../component/l2-provider-api/src/main/java" />
+												<fileset dir="${project.basedir}/../component/l2-provider-api/src/test/java" />
+												<fileset dir="${project.basedir}/../component/l2-provider-impl-one/src/main/java" />
+												<fileset dir="${project.basedir}/../component/l2-provider-impl-one/src/test/java" />
+												<fileset dir="${project.basedir}/../component/l2-provider-impl-two/src/main/java" />
+												<fileset dir="${project.basedir}/../component/l2-provider-impl-two/src/test/java" />
 											</sourcefiles>
 										</group>
 									</structure>
-									<html destdir="${basedir}/target/coverage-report/html" />
-									<xml destfile="${basedir}/target/coverage-report/coverage-report.xml" />
-									<csv destfile="${basedir}/target/coverage-report/coverage-report.csv" />
+									<html destdir="${project.basedir}/target/coverage-report/html" />
+									<xml destfile="${project.basedir}/target/coverage-report/coverage-report.xml" />
+									<csv destfile="${project.basedir}/target/coverage-report/coverage-report.csv" />
 								</report>
 							</target>
 						</configuration>
