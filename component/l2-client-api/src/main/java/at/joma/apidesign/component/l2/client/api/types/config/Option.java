@@ -68,11 +68,6 @@ public class Option implements IOption, Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
-    }
-
-    @Override
     public String getName() {
         return this.name;
     }
@@ -82,13 +77,20 @@ public class Option implements IOption, Serializable {
     }
 
     @Override
+    public String getValue() {
+        return this.value;
+    }
+    
+
+    @Override
     public String toString() {
         return this.getClass().getSimpleName() + "[" + getName() + ", " + getValue() + "]";
     }
+    
 
     @Override
-    public String getValue() {
-        return this.value;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     @Override
