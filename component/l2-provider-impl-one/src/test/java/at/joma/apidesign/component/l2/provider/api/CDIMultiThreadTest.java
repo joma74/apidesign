@@ -2,105 +2,102 @@ package at.joma.apidesign.component.l2.provider.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.weld.environment.se.contexts.ThreadScoped;
-import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.cdiutilsmultithreaded.ManagedInstanceCreator;
 import at.joma.apidesign.component.l1.client.api.IL1Component;
-import at.joma.apidesign.component.l2.client.api.Omitting;
-import at.joma.apidesign.component.l2.client.api.Sorting;
-import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
-import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
+import at.joma.apidesign.component.l2.provider.api.multithreadutils.InjectionPerThreadScope;
+import at.joma.apidesign.component.l2.provider.api.multithreadutils.InjectionSameScope;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses({
-    ComponentProducer.class,
-    RunnableDecorator.class
-})
+@AdditionalClasses({ ComponentProducer.class })
 public class CDIMultiThreadTest {
 
-    Logger LOG = LoggerFactory.getLogger(CDIMultiThreadTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CDIMultiThreadTest.class);
 
-    @Inject
-    ManagedInstanceCreator instanceCreator;
+	@Rule
+	public TestRule getWatchman() {
+		return new TestWatcher() {
 
-    private static final int MAX_ROUNDS = 100;
+			@Override
+			protected void starting(Description description) {
+				LOG.info("*********** Running {} ***********", description.getMethodName());
+			}
+		};
+	}
 
-    /**
-     * Just to initialized the CDI System first
-     */
-    @Inject
-    @AsXML
-    IL1Component asXmlWarmup;
+	@Inject
+	ManagedInstanceCreator instanceCreator;
+	
+	@Inject
+	@AsXML
+	IL1Component asXmlWarmup;
 
-    @Test
-    @Ignore
-    public void testMultiThreadedCDIInjection() throws Exception {
+	private static final int ROUNDS = 100000;
 
-        long start = System.currentTimeMillis();
+	@Test
+	public void testMultiThreaded_PerThreadScopeInjections() throws Exception {
 
-        final List<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < MAX_ROUNDS; i++) {
-            createInjectionVariantGiven(threads);
-            createInjectionVariantDefault(threads);
-        }
-        for (final Thread thread : threads) {
-            thread.start();
-        }
-        for (final Thread thread : threads) {
-            thread.join();
-        }
+		long start = System.currentTimeMillis();
 
-        LOG.info("Creating " + MAX_ROUNDS * 2 + " CDI components in multiple threads took " + (System.currentTimeMillis() - start) + "[MS]");
+		final List<Callable<Void>> callables = new ArrayList<>();
+		for (int i = 0; i < ROUNDS; i++) {
+			createPerThreadScopeInjections(callables);
+		}
+		ExecutorService executor = Executors.newFixedThreadPool(50);
+		executor.invokeAll(callables);
+		executor.shutdown();
 
-    }
+		long duration = (System.nanoTime() - start);
+		double milliseconds = duration / 1e6;
+		LOG.info("Creating " + ROUNDS + " multithreaded per thread scope injections took " + milliseconds + "[MS], t.i. " + milliseconds / ROUNDS + "[MS]/instance");
 
-    private void createInjectionVariantGiven(final List<Thread> threads) {
-        final Thread thread_A = new Thread() {
+	}
 
-            @Inject
-            @ThreadScoped
-            @AsXML
-            @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-            @Omitting(globalFields = {
-                "_parent"
-            })
-            Instance<IL1Component> asXmlGiven;
+	private void createPerThreadScopeInjections(final List<Callable<Void>> callables) {
+		final InjectionPerThreadScope aCallable = new InjectionPerThreadScope();
+		instanceCreator.activateCDI(aCallable);
+		callables.add(aCallable);
+	}
 
-            public void run() {
-                IL1Component threadScopedInstance = asXmlGiven.get();
-                LOG.debug(System.lineSeparator() + "Component Instance " + threadScopedInstance.hashCode() + threadScopedInstance.printConfiguration());
-            }
-        };
-        instanceCreator.activateCDI(thread_A);
-        threads.add(thread_A);
-    }
+	@Test
+	public void testMultiThreaded_SameScopeInjections() throws Exception {
 
-    private void createInjectionVariantDefault(final List<Thread> threads) {
-        final Thread thread_A = new Thread() {
+		long start = System.nanoTime();
 
-            @Inject
-            @AsXML
-            IL1Component asXmlDefault;
+		final List<Callable<Void>> callables = new ArrayList<>();
+		for (int i = 0; i < ROUNDS; i++) {
+			createSameScopeInjections(callables);
+		}
+		ExecutorService executor = Executors.newFixedThreadPool(50);
+		executor.invokeAll(callables);
+		executor.shutdown();
 
-            public void run() {
-                LOG.debug(System.lineSeparator() + "Instance " + asXmlDefault.hashCode() + asXmlDefault.printConfiguration());
-            }
-        };
-        instanceCreator.activateCDI(thread_A);
-        threads.add(thread_A);
-    }
+		long duration = (System.nanoTime() - start);
+		double milliseconds = duration / 1e6;
+		LOG.info("Creating " + ROUNDS + " multithreaded same scope injections injections took " + milliseconds + "[MS], t.i. " + milliseconds / ROUNDS + "[MS]/instance");
+	}
+
+	private void createSameScopeInjections(final List<Callable<Void>> callables) {
+		final InjectionSameScope aCallable = new InjectionSameScope();
+		instanceCreator.activateCDI(aCallable);
+		callables.add(aCallable);
+	}
 
 }
