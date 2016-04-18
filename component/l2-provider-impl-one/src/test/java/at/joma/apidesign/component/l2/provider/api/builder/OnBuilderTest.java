@@ -102,6 +102,8 @@ public class OnBuilderTest {
 		formatInfos_Expected.putAll(Component.getFormatInfos());
 
 		Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
+		
+		Assert.assertEquals(3, bean.optionsCount());
 
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
 	}
@@ -127,6 +129,8 @@ public class OnBuilderTest {
 		formatInfos_Expected.putAll(Component.getFormatInfos());
 
 		Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
+		
+		Assert.assertEquals(3, bean.optionsCount());
 
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
 	}

@@ -91,6 +91,8 @@ public class OnCDITest {
 		LOG.info(this.asXmlDefault.printConfiguration());
 
 		Assert.assertEquals(configuredOptions_Expected.getFormatInfo(), asXmlDefault.getFormatInfo());
+		
+		Assert.assertEquals(3, asXmlDefault.optionsCount());
 
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions_Expected.getOptions()), Arrays.asList(this.asXmlDefault.getOptions())));
 	}
@@ -116,6 +118,8 @@ public class OnCDITest {
 		Assert.assertNotNull(this.asXmlGiven);
 
 		LOG.info(this.asXmlGiven.printConfiguration());
+		
+		Assert.assertEquals(3, asXmlGiven.optionsCount());
 
 		Assert.assertEquals(configuredOptions_Expected.getFormatInfo(), asXmlDefault.getFormatInfo());
 
