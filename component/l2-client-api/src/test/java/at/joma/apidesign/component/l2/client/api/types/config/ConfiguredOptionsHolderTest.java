@@ -118,5 +118,27 @@ public class ConfiguredOptionsHolderTest {
 
         assertThat(configuredOptions_a, is(equalTo(configuredOptions_b)));
     }
+    
+    @Test
+    public void test_Given_AskEnumValueByString_Then_IllegalArgumentException() {
+    	
+    	thrown.expect(IllegalArgumentException.class);
+    	thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_ASKCONFIGIUREDENUMOPTIONBYENUM);
+
+        ConfiguredOptionsHolder configuredOptions_a = setup_ConfigOptionsHolder_1();
+
+        configuredOptions_a.getValueFor(SortingOrder.class.getSimpleName());
+    }
+    
+    @Test
+    public void test_Given_AskUnkownOption_Then_IllegalArgumentException() {
+    	
+    	thrown.expect(IllegalArgumentException.class);
+    	thrown.expectMessage(ConfiguredOptionsHolder.MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR);
+
+        ConfiguredOptionsHolder configuredOptions_a = setup_ConfigOptionsHolder_1();
+
+        configuredOptions_a.getValueFor("thisoptionnameisnotknown");
+    }
 
 }
