@@ -38,6 +38,8 @@ public class Component implements IL2Component {
     public static final String GLOBALFIELDS_OPTIONNAME = "globalFields";
 
     public static final String FORMATINFO_KEY_FORMATTER = "XStream";
+    
+    public static final String ERROR_MESSAGE_OPTIONSNOTVALID = "Options are not valid";
 
     protected static final Map<String, String> FORMATINFOS = new HashMap<>();
 

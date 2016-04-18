@@ -2,7 +2,9 @@ package at.joma.apidesign.component.l2.provider.api;
 
 import java.util.Arrays;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.collections4.ListUtils;
 import org.jglue.cdiunit.AdditionalClasses;
@@ -10,6 +12,7 @@ import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -20,9 +23,11 @@ import org.slf4j.LoggerFactory;
 import at.joma.apidesign.component.l1.client.api.IL1Component;
 import at.joma.apidesign.component.l2.client.api.Omitting;
 import at.joma.apidesign.component.l2.client.api.Sorting;
+import at.joma.apidesign.component.l2.client.api.IL2Component.Builder;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
+import at.joma.apidesign.component.l2.provider.api.builder.AsXMLByBuilderOptions;
 import at.joma.apidesign.component.l2.provider.impl.Component;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 
@@ -33,6 +38,14 @@ import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 public class OnCDITest {
 
     private static final Logger LOG = LoggerFactory.getLogger(OnCDITest.class);
+    
+    ExpectedException thrown;
+
+	@Rule
+	public ExpectedException getThrown() {
+		this.thrown = ExpectedException.none();
+		return this.thrown;
+	}
 
     @Inject
     @AsXML
@@ -49,6 +62,14 @@ public class OnCDITest {
         "_parent"
     })
     IL1Component asXmlGiven;
+    
+    @Inject
+    @AsXML
+    @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.ASC)
+    @Omitting(globalFields = {
+        "_parent"
+    })
+    Instance<IL1Component> asXmlWithInvalidOptions;
 
     @Rule
     public TestRule getWatchman() {
@@ -110,5 +131,14 @@ public class OnCDITest {
 
         Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions_Expected.getOptions()), Arrays.asList(this.asXmlGiven.getOptions())));
     }
+    
+    @Test
+	public void testComponent_Given_InvalidConfiguration_Then_ConstraintViolationException() throws ReflectiveOperationException {
+
+		this.thrown.expect(ConstraintViolationException.class);
+		this.thrown.expectMessage(Component.ERROR_MESSAGE_OPTIONSNOTVALID);
+
+		asXmlWithInvalidOptions.get();
+	}
 
 }

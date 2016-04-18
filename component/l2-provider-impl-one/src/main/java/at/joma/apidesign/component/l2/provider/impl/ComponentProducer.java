@@ -59,7 +59,7 @@ public class ComponentProducer {
             Validator validator = validatorFactory.getValidator();
             Set<ConstraintViolation<Component>> constraintViolations = validator.validate(iL2Component);
             if (!constraintViolations.isEmpty()) {
-                throw new ConstraintViolationException("Options are not valid", constraintViolations);
+                throw new ConstraintViolationException(Component.ERROR_MESSAGE_OPTIONSNOTVALID, constraintViolations);
             }
         }
         return iL2Component;

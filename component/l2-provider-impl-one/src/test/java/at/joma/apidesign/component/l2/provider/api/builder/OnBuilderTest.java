@@ -4,12 +4,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.ConstraintViolationException;
+
 import org.apache.commons.collections4.ListUtils;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -30,6 +33,14 @@ import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 public class OnBuilderTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnBuilderTest.class);
+
+	ExpectedException thrown;
+
+	@Rule
+	public ExpectedException getThrown() {
+		this.thrown = ExpectedException.none();
+		return this.thrown;
+	}
 
 	@Rule
 	public TestRule getWatchman() {
@@ -85,11 +96,11 @@ public class OnBuilderTest {
 		Assert.assertNotNull(bean);
 
 		LOG.info(bean.printConfiguration());
-		
+
 		Map<String, String> formatInfos_Expected = new HashMap<>();
 		formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
 		formatInfos_Expected.putAll(Component.getFormatInfos());
-		
+
 		Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
 
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
@@ -102,7 +113,7 @@ public class OnBuilderTest {
 				.with(SortingOrder.GIVEN)//
 				.with(SortingDirection.NONE)//
 				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
-		
+
 		IL1Component bean = new Builder<>(AsXMLByBuilderOptions.class)//
 				.with(configuredOptions)//
 				.build();
@@ -112,11 +123,27 @@ public class OnBuilderTest {
 		LOG.info(bean.printConfiguration());
 
 		Map<String, String> formatInfos_Expected = new HashMap<>();
-        formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
-        formatInfos_Expected.putAll(Component.getFormatInfos());
-        
-        Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
-		
+		formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
+		formatInfos_Expected.putAll(Component.getFormatInfos());
+
+		Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
+
 		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
+	}
+
+	@Test
+	public void testComponent_Given_InvalidConfiguration_Then_ConstraintViolationException() throws ReflectiveOperationException {
+
+		this.thrown.expect(ConstraintViolationException.class);
+		this.thrown.expectMessage(Component.ERROR_MESSAGE_OPTIONSNOTVALID);
+
+		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
+				.with(SortingOrder.GIVEN)//
+				.with(SortingDirection.ASC)//
+				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+
+		new Builder<>(AsXMLByBuilderOptions.class)//
+				.with(configuredOptions)//
+				.build();
 	}
 }
