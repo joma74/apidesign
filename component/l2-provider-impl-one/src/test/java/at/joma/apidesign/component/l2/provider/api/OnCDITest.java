@@ -30,109 +30,152 @@ import at.joma.apidesign.component.l2.provider.impl.Component;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses({ ComponentProducer.class })
+@AdditionalClasses({
+    ComponentProducer.class
+})
 public class OnCDITest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OnCDITest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OnCDITest.class);
 
-	ExpectedException thrown;
+    ExpectedException thrown;
 
-	@Rule
-	public ExpectedException getThrown() {
-		this.thrown = ExpectedException.none();
-		return this.thrown;
-	}
+    @Rule
+    public ExpectedException getThrown() {
+        this.thrown = ExpectedException.none();
+        return this.thrown;
+    }
 
-	@Inject
-	@AsXML
-	IL1Component asXmlDefault;
+    @Inject
+    @AsXML
+    IL1Component asXmlDefault;
 
-	@Inject
-	@AsXML
-	IL1Component asXmlDefaultSame;
+    @Inject
+    @AsXML
+    IL1Component asXmlDefaultSame;
 
-	@Inject
-	@AsXML
-	@Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-	@Omitting(globalFields = { "_parent" })
-	IL1Component asXmlGiven;
+    @Inject
+    @AsXML
+    @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
+    @Omitting(globalFields = {
+        "_parent"
+    })
+    IL1Component asXmlGiven;
+    
+    @Inject
+    @AsXML
+    @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
+    @Omitting(globalFields = {
+        "_parent"
+    })
+    Instance<IL1Component> asXmlGivenInstance;
 
-	@Inject
-	@AsXML
-	@Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.ASC)
-	@Omitting(globalFields = { "_parent" })
-	Instance<IL1Component> asXmlWithInvalidOptions;
+    @Inject
+    @AsXML
+    @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.ASC)
+    @Omitting(globalFields = {
+        "_parent"
+    })
+    Instance<IL1Component> asXmlWithInvalidOptions;
 
-	@Rule
-	public TestRule getWatchman() {
-		return new TestWatcher() {
+    @Rule
+    public TestRule getWatchman() {
+        return new TestWatcher() {
 
-			@Override
-			protected void starting(Description description) {
-				LOG.info("*********** Running {} ***********", description.getMethodName());
-			}
-		};
-	}
+            @Override
+            protected void starting(Description description) {
+                LOG.info("*********** Running {} ***********", description.getMethodName());
+            }
+        };
+    }
 
-	@Test
-	public void testDefaultSettings() {
+    @Test
+    public void testDefaultSettings() {
 
-		ConfiguredOptionsHolder configuredOptions_Expected = new ConfiguredOptionsHolder();
-		configuredOptions_Expected//
-				.encloseFormatInfos(ComponentProducer.getFormatInfos())//
-				.encloseFormatInfos(Component.getFormatInfos())//
-				.with(SortingOrder.ALPHABETICALLY)//
-				.with(SortingDirection.ASC)//
-				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] {})//
-		;
+        ConfiguredOptionsHolder configuredOptions_Expected = new ConfiguredOptionsHolder();
+        configuredOptions_Expected//
+                .encloseFormatInfos(ComponentProducer.getFormatInfos())//
+                .encloseFormatInfos(Component.getFormatInfos())//
+                .with(SortingOrder.ALPHABETICALLY)//
+                .with(SortingDirection.ASC)//
+                .with(Component.GLOBALFIELDS_OPTIONNAME, new String[]{})//
+        ;
 
-		Assert.assertNotNull(this.asXmlDefault);
+        Assert.assertNotNull(this.asXmlDefault);
 
-		LOG.info(this.asXmlDefault.printConfiguration());
+        LOG.info(this.asXmlDefault.printConfiguration());
 
-		Assert.assertEquals(configuredOptions_Expected.getFormatInfo(), asXmlDefault.getFormatInfo());
-		
-		Assert.assertEquals(3, asXmlDefault.optionsCount());
+        Assert.assertEquals(configuredOptions_Expected.getFormatInfo(), asXmlDefault.getFormatInfo());
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions_Expected.getOptions()), Arrays.asList(this.asXmlDefault.getOptions())));
-	}
+        Assert.assertEquals(3, asXmlDefault.optionsCount());
 
-	@Test
-	public void testForSameness() {
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions_Expected.getOptions()), Arrays.asList(this.asXmlDefault.getOptions())));
+    }
 
-		Assert.assertSame(this.asXmlDefault, this.asXmlDefaultSame);
-	}
+    @Test
+    public void testForSameness() {
 
-	@Test
-	public void testGivenSettings() {
+        Assert.assertSame(this.asXmlDefault, this.asXmlDefaultSame);
+    }
 
-		ConfiguredOptionsHolder configuredOptions_Expected = new ConfiguredOptionsHolder();
-		configuredOptions_Expected//
-				.encloseFormatInfos(ComponentProducer.getFormatInfos())//
-				.encloseFormatInfos(Component.getFormatInfos())//
-				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.NONE)//
-				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" })//
-		;
+    @Test
+    public void testGivenSettings() {
 
-		Assert.assertNotNull(this.asXmlGiven);
+        ConfiguredOptionsHolder configuredOptions_Expected = new ConfiguredOptionsHolder();
+        configuredOptions_Expected//
+                .encloseFormatInfos(ComponentProducer.getFormatInfos())//
+                .encloseFormatInfos(Component.getFormatInfos())//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.NONE)//
+                .with(Component.GLOBALFIELDS_OPTIONNAME, new String[]{
+                    "_parent"
+                })//
+        ;
 
-		LOG.info(this.asXmlGiven.printConfiguration());
-		
-		Assert.assertEquals(3, asXmlGiven.optionsCount());
+        Assert.assertNotNull(this.asXmlGiven);
 
-		Assert.assertEquals(configuredOptions_Expected.getFormatInfo(), asXmlDefault.getFormatInfo());
+        LOG.info(this.asXmlGiven.printConfiguration());
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions_Expected.getOptions()), Arrays.asList(this.asXmlGiven.getOptions())));
-	}
+        Assert.assertEquals(3, asXmlGiven.optionsCount());
 
-	@Test
-	public void testComponent_Given_InvalidConfiguration_Then_ConstraintViolationException() throws ReflectiveOperationException {
+        Assert.assertEquals(configuredOptions_Expected.getFormatInfo(), asXmlDefault.getFormatInfo());
 
-		this.thrown.expect(ConstraintViolationException.class);
-		this.thrown.expectMessage(Component.ERROR_MESSAGE_OPTIONSNOTVALID);
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions_Expected.getOptions()), Arrays.asList(this.asXmlGiven.getOptions())));
+    }
+    
+    @Test
+    public void testGivenSettingsWithInstance() {
 
-		asXmlWithInvalidOptions.get();
-	}
+        ConfiguredOptionsHolder configuredOptions_Expected = new ConfiguredOptionsHolder();
+        configuredOptions_Expected//
+                .encloseFormatInfos(ComponentProducer.getFormatInfos())//
+                .encloseFormatInfos(Component.getFormatInfos())//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.NONE)//
+                .with(Component.GLOBALFIELDS_OPTIONNAME, new String[]{
+                    "_parent"
+                })//
+        ;
+        
+        IL1Component theInstance = this.asXmlGivenInstance.get();
+
+        Assert.assertNotNull(theInstance);
+
+        LOG.info(theInstance.printConfiguration());
+
+        Assert.assertEquals(3, theInstance.optionsCount());
+
+        Assert.assertEquals(configuredOptions_Expected.getFormatInfo(), theInstance.getFormatInfo());
+
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions_Expected.getOptions()), Arrays.asList(theInstance.getOptions())));
+    }
+
+    @Test
+    public void testComponent_Given_InvalidConfiguration_Then_ConstraintViolationException() throws ReflectiveOperationException {
+
+        this.thrown.expect(ConstraintViolationException.class);
+        this.thrown.expectMessage(Component.ERROR_MESSAGE_OPTIONSNOTVALID);
+
+        asXmlWithInvalidOptions.get();
+    }
 
 }
