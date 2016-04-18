@@ -106,12 +106,9 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return (IConfiguration) ois.readObject();
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException  e) {
 			LOG.error(e.getMessage(), e);
-			return null;
-		} catch (ClassNotFoundException e) {
-			LOG.error(e.getMessage(), e);
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
