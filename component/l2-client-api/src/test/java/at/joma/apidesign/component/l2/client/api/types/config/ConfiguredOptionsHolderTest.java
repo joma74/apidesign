@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -32,6 +33,15 @@ public class ConfiguredOptionsHolderTest {
                 .with(GLOBALFIELDS_OPTIONNAME, GLOBALFIELDS);
 
         return configuredOptions;
+    }
+    
+    @Test
+    public void testForSameHashCode() {
+        
+        ConfiguredOptionsHolder a = setup_ConfigOptionsHolder_1();
+        ConfiguredOptionsHolder b = setup_ConfigOptionsHolder_1();
+
+        Assert.assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test

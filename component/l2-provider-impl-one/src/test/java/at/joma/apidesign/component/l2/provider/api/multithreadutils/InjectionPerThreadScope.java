@@ -3,6 +3,7 @@ package at.joma.apidesign.component.l2.provider.api.multithreadutils;
 import java.util.concurrent.Callable;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -32,11 +33,17 @@ public class InjectionPerThreadScope implements Callable<Void> {
 	Instance<IL1Component> asXmlGiven;
 
 	private ThreadContext threadContext;
+	
+	private CreationalContext creationalContext;
 
 	@Inject
 	@PostConstruct
 	public void postConstruct(WeldSEBeanRegistrant extension) {
 		this.threadContext = extension.getThreadContext();
+	}
+	
+	public void setCreationalContext(CreationalContext creationalContext){
+	    this.creationalContext = creationalContext;
 	}
 
 	@Override
@@ -45,7 +52,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
 			threadContext.activate();
 			IL1Component firstInstance = asXmlGiven.get();
 			IL1Component secondInstance = asXmlGiven.get();
-			Assert.assertSame(firstInstance, secondInstance); // Caching works test
+			Assert.assertEquals(firstInstance.hashCode(), secondInstance.hashCode()); // Caching works test
 			if (LOG.isDebugEnabled()) {
 				LOG.debug(System.lineSeparator() + "Instance(1) " + firstInstance.hashCode() + firstInstance.printConfiguration());
 				LOG.debug(System.lineSeparator() + "Instance(2) " + secondInstance.hashCode() + secondInstance.printConfiguration());
@@ -54,6 +61,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
 		} finally {
 			threadContext.invalidate();
 			threadContext.deactivate();
+//			creationalContext.release();
 		}
 	}
 

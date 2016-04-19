@@ -80,21 +80,27 @@ public class Option implements IOption, Serializable {
     public String getValue() {
         return this.value;
     }
-    
 
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "[" + getName() + ", " + getValue() + "]";
     }
-    
 
     @Override
     public boolean equals(Object obj) {
+        // if (obj instanceof Option) {
+        // final Option other = (Option) obj;
+        // return Objects.equal(name, other.name) && Objects.equal(value,
+        // other.value) && Objects.equal(type, other.type);
+        // } else {
+        // return false;
+        // }
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     @Override
     public int hashCode() {
+        // return Objects.hashCode(name, value, type);
         return HashCodeBuilder.reflectionHashCode(this);
     }
 

@@ -1,4 +1,4 @@
-package at.joma.apidesign.cdiutilsmultithreaded;
+package at.joma.apidesign.component.l2.provider.api.multithreadutils;
 
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -16,6 +16,10 @@ public class ManagedInstanceCreator {
     @Inject
     BeanManager beanManager;
 
+    @SuppressWarnings({
+        "rawtypes",
+        "unchecked"
+    })
     public <T> T getManagedInstance(final Class<T> beanType, final AnnotationLiteral annotationLiteral) {
 
         T result = null;
@@ -34,7 +38,11 @@ public class ManagedInstanceCreator {
         return result;
     }
 
-    public <T> T activateCDI(T t) {
+    @SuppressWarnings({
+        "rawtypes",
+        "unchecked"
+    })
+    public <T> Object[] activateCDI(T t) {
 
         final Class<?> aClass = t.getClass();
         final AnnotatedType annotationType = beanManager.createAnnotatedType(aClass);
@@ -42,7 +50,10 @@ public class ManagedInstanceCreator {
         final CreationalContext creationalContext = beanManager.createCreationalContext(null);
         injectionTarget.inject(t, creationalContext);
         injectionTarget.postConstruct(t);
-        return t;
+        return new Object[]{
+            t,
+            creationalContext
+        };
     }
 
 }

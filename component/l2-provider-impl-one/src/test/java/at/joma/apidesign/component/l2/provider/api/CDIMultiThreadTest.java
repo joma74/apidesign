@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.Inject;
 
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -19,85 +22,124 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.joma.apidesign.cdiutilsmultithreaded.ManagedInstanceCreator;
 import at.joma.apidesign.component.l1.client.api.IL1Component;
 import at.joma.apidesign.component.l2.provider.api.multithreadutils.InjectionPerThreadScope;
 import at.joma.apidesign.component.l2.provider.api.multithreadutils.InjectionSameScope;
+import at.joma.apidesign.component.l2.provider.api.multithreadutils.ManagedInstanceCreator;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses({ ComponentProducer.class })
+@AdditionalClasses({
+    ComponentProducer.class
+})
 public class CDIMultiThreadTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CDIMultiThreadTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CDIMultiThreadTest.class);
 
-	@Rule
-	public TestRule getWatchman() {
-		return new TestWatcher() {
+    @Rule
+    public TestRule getWatchman() {
+        return new TestWatcher() {
 
-			@Override
-			protected void starting(Description description) {
-				LOG.info("*********** Running {} ***********", description.getMethodName());
-			}
-		};
-	}
+            @Override
+            protected void starting(Description description) {
+                LOG.info("*********** Running {} ***********", description.getMethodName());
+            }
+        };
+    }
 
-	@Inject
-	ManagedInstanceCreator instanceCreator;
-	
-	@Inject
-	@AsXML
-	IL1Component asXmlWarmup;
+    @Inject
+    ManagedInstanceCreator instanceCreator;
 
-	private static final int ROUNDS = 100000;
+    @Inject
+    @AsXML
+    IL1Component asXmlWarmup;
 
-	@Test
-	public void testMultiThreaded_PerThreadScopeInjections() throws Exception {
+    private static final int THREAD_BATCH_SIZE = 5;
 
-		long start = System.currentTimeMillis();
+    private static final int ROUNDS = 1;
 
-		final List<Callable<Void>> callables = new ArrayList<>();
-		for (int i = 0; i < ROUNDS; i++) {
-			createPerThreadScopeInjections(callables);
-		}
-		ExecutorService executor = Executors.newFixedThreadPool(50);
-		executor.invokeAll(callables);
-		executor.shutdown();
+    @Test
+    @Ignore
+    public void testMultiThreaded_PerThreadScopeInjections() throws Exception {
 
-		long duration = (System.nanoTime() - start);
-		double milliseconds = duration / 1e6;
-		LOG.info("Creating " + ROUNDS + " multithreaded per thread scope injections took " + milliseconds + "[MS], t.i. " + milliseconds / ROUNDS + "[MS]/instance");
+        long start = System.nanoTime();
 
-	}
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_BATCH_SIZE);
 
-	private void createPerThreadScopeInjections(final List<Callable<Void>> callables) {
-		final InjectionPerThreadScope aCallable = new InjectionPerThreadScope();
-		instanceCreator.activateCDI(aCallable);
-		callables.add(aCallable);
-	}
+        for (int i = 0; i < ROUNDS; i++) {
+            final List<Callable<Void>> callables = createNewBatchOfThreadScopeInjections();
+            List<Future<Void>> results = executor.invokeAll(callables);
+            rethrowOnException(results);
+        }
+        executor.shutdown();
 
-	@Test
-	public void testMultiThreaded_SameScopeInjections() throws Exception {
+        long duration = (System.nanoTime() - start);
+        double milliseconds = duration / 1e6;
+        LOG.info("Creating " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded per thread scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
+                / (THREAD_BATCH_SIZE * ROUNDS) + "[MS]/instance");
 
-		long start = System.nanoTime();
+    }
 
-		final List<Callable<Void>> callables = new ArrayList<>();
-		for (int i = 0; i < ROUNDS; i++) {
-			createSameScopeInjections(callables);
-		}
-		ExecutorService executor = Executors.newFixedThreadPool(50);
-		executor.invokeAll(callables);
-		executor.shutdown();
+    private void rethrowOnException(List<Future<Void>> results) throws Exception {
+        for (Future<Void> result : results) {
+            try {
+                result.get();
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+                throw e;
+            }
+        }
+    }
 
-		long duration = (System.nanoTime() - start);
-		double milliseconds = duration / 1e6;
-		LOG.info("Creating " + ROUNDS + " multithreaded same scope injections injections took " + milliseconds + "[MS], t.i. " + milliseconds / ROUNDS + "[MS]/instance");
-	}
+    private List<Callable<Void>> createNewBatchOfThreadScopeInjections() {
+        final List<Callable<Void>> callables = new ArrayList<>();
+        for (int i = 0; i < THREAD_BATCH_SIZE; i++) {
+            createPerThreadScopeInjections(callables);
+        }
+        return callables;
+    }
 
-	private void createSameScopeInjections(final List<Callable<Void>> callables) {
-		final InjectionSameScope aCallable = new InjectionSameScope();
-		instanceCreator.activateCDI(aCallable);
-		callables.add(aCallable);
-	}
+    private void createPerThreadScopeInjections(final List<Callable<Void>> callables) {
+        final InjectionPerThreadScope aCallable = new InjectionPerThreadScope();
+        Object[] result = instanceCreator.activateCDI(aCallable);
+        aCallable.setCreationalContext((CreationalContext) result[1]);
+        callables.add(aCallable);
+    }
+
+    @Test
+    @Ignore
+    public void testMultiThreaded_SameScopeInjections() throws Exception {
+
+        long start = System.nanoTime();
+
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_BATCH_SIZE);
+
+        for (int i = 0; i < ROUNDS; i++) {
+            final List<Callable<Void>> callables = createNewBatchOfSameScopeInjections();
+            List<Future<Void>> results = executor.invokeAll(callables);
+            rethrowOnException(results);
+        }
+        executor.shutdown();
+
+        long duration = (System.nanoTime() - start);
+        double milliseconds = duration / 1e6;
+        LOG.info("Creating " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded same scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
+                / (THREAD_BATCH_SIZE * ROUNDS) + "[MS]/instance");
+    }
+
+    private List<Callable<Void>> createNewBatchOfSameScopeInjections() {
+        final List<Callable<Void>> callables = new ArrayList<>();
+        for (int i = 0; i < THREAD_BATCH_SIZE; i++) {
+            createSameScopeInjections(callables);
+        }
+        return callables;
+    }
+
+    private void createSameScopeInjections(final List<Callable<Void>> callables) {
+        final InjectionSameScope aCallable = new InjectionSameScope();
+        Object[] result = instanceCreator.activateCDI(aCallable);
+        aCallable.setCreationalContext((CreationalContext) result[1]);
+        callables.add(aCallable);
+    }
 
 }
