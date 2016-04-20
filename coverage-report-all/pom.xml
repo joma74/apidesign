@@ -67,7 +67,7 @@
 										<group name="jacoco-report-all apidesign">
 											<classfiles>
 												<fileset dir="${project.basedir}/../">
-													<!-- *Test*.class because to math classes like OnCDITest$1.b4ffe689eb02a4c2.class -->
+													<!-- *Test*.class because to match classes like OnCDITest$1.b4ffe689eb02a4c2.class -->
 													<exclude name="**/target/jacoco-classes-dump/**/*Test*.class" />
 													<include name="**/target/jacoco-classes-dump/**/*.class" />
 												</fileset>

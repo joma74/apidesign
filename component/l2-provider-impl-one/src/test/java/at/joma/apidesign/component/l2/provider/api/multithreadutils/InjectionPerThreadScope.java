@@ -96,7 +96,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
         } finally {
             threadContext.invalidate();
             threadContext.deactivate();
-            // creationalContext.release();
+            creationalContext.release();
         }
     }
 
