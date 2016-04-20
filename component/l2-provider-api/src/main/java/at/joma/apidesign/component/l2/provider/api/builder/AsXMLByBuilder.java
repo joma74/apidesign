@@ -1,10 +1,12 @@
 package at.joma.apidesign.component.l2.provider.api.builder;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
@@ -25,5 +27,7 @@ public @interface AsXMLByBuilder {
 
     @Nonbinding
     public Sorting sorting() default @Sorting;
-
+    
+    @Nonbinding
+    public Class<? extends Annotation>  inScope() default ApplicationScoped.class;
 }

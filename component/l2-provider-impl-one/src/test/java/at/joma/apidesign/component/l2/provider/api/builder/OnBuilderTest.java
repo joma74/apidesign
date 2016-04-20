@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.collections4.ListUtils;
@@ -54,6 +55,7 @@ public class OnBuilderTest {
 	}
 
 	@Test
+	@RequestScoped
 	public void testComponent_ForSameness() throws ReflectiveOperationException {
 
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();

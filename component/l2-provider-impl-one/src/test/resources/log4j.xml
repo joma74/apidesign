@@ -12,6 +12,9 @@
 		<priority value="debug"></priority>
 	</category>
 	<category name="at.joma.apidesign.component.l2.provider.api">
+		<priority value="info"></priority>
+	</category>
+	<category name="at.joma.apidesign.component.l2.provider.impl">
 		<priority value="debug"></priority>
 	</category>
 	<category name="org.jglue.cdiunit">

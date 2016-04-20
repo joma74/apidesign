@@ -60,7 +60,7 @@ public class OnCDITest {
         "_parent"
     })
     IL1Component asXmlGiven;
-    
+
     @Inject
     @AsXML
     @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
@@ -141,7 +141,7 @@ public class OnCDITest {
 
         Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions_Expected.getOptions()), Arrays.asList(this.asXmlGiven.getOptions())));
     }
-    
+
     @Test
     public void testGivenSettingsWithInstance() {
 
@@ -155,7 +155,7 @@ public class OnCDITest {
                     "_parent"
                 })//
         ;
-        
+
         IL1Component theInstance = this.asXmlGivenInstance.get();
 
         Assert.assertNotNull(theInstance);

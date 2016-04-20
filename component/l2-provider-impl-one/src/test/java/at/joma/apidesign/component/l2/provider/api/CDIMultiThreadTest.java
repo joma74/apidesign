@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -54,12 +53,11 @@ public class CDIMultiThreadTest {
     @AsXML
     IL1Component asXmlWarmup;
 
-    private static final int THREAD_BATCH_SIZE = 5;
+    private static final int THREAD_BATCH_SIZE = 50;
 
-    private static final int ROUNDS = 1;
+    private static final int ROUNDS = 500;
 
     @Test
-    @Ignore
     public void testMultiThreaded_PerThreadScopeInjections() throws Exception {
 
         long start = System.nanoTime();
@@ -75,7 +73,7 @@ public class CDIMultiThreadTest {
 
         long duration = (System.nanoTime() - start);
         double milliseconds = duration / 1e6;
-        LOG.info("Creating " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded per thread scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
+        LOG.info("Created " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded per thread scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
                 / (THREAD_BATCH_SIZE * ROUNDS) + "[MS]/instance");
 
     }
@@ -107,7 +105,6 @@ public class CDIMultiThreadTest {
     }
 
     @Test
-    @Ignore
     public void testMultiThreaded_SameScopeInjections() throws Exception {
 
         long start = System.nanoTime();
@@ -123,7 +120,7 @@ public class CDIMultiThreadTest {
 
         long duration = (System.nanoTime() - start);
         double milliseconds = duration / 1e6;
-        LOG.info("Creating " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded same scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
+        LOG.info("Created " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded same scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
                 / (THREAD_BATCH_SIZE * ROUNDS) + "[MS]/instance");
     }
 
