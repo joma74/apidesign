@@ -53,9 +53,9 @@ public class CDIMultiThreadTest {
     @AsXML
     IL1Component asXmlWarmup;
 
-    private static final int THREAD_BATCH_SIZE = 10;
+    private static final int THREAD_BATCH_SIZE = 50;
 
-    private static final int ROUNDS = 5;
+    private static final int ROUNDS = 50;
 
     @Test
     public void testMultiThreaded_PerThreadScopeInjections() throws Exception {
