@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
+<stringAttribute key="org.eclipse.debug.core.ATTR_REFRESH_SCOPE" value="${workspace}"/>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${JAVA_EXE}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-Xmx2048M&#13;&#10;-Xms1024M&#13;&#10;-XX:PermSize=512M&#10;-XX:ReservedCodeCacheSize=256M&#10;-XX:-DoEscapeAnalysis&#13;&#10;-Dclassworlds.conf=&quot;${resource_loc:MIGS/src/main/organisation/maven-3.2.1/bin/m2.conf}&quot;&#13;&#10;-Dmaven.home=&quot;${resource_loc:MIGS/src/main/organisation/maven-3.2.1}&quot;&#13;&#10;-Dfile.encoding=utf8&#13;&#10;-Duser.language=en&#13;&#10;-Dwtpversion=1.5&#10;-Declipse.wtpmanifest=true&#10;-Declipse.wtpapplicationxml=true&#13;&#10;-DdownloadSources=true&#10;-DskipTests=${string_prompt:skipTests:true}&#13;&#10;-Declipse.workspace=&quot;${workspace_loc}&quot;&#10;-Declipse.limitProjectReferencesToWorkspace=true&#13;&#10;-Declipse.useProjectReferences=true&#10;-classpath &quot;${resource_loc:MIGS/src/main/organisation/maven-3.2.1/boot/plexus-classworlds-2.5.1.jar}&quot;&#13;&#10;org.codehaus.classworlds.Launcher&#10;-T 2C&#10;coveralls:report -e -Dproguard.skip=true -fae"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${selected_resource_loc}"/>
+</launchConfiguration>

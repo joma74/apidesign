@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l1.client.api.IL1Component;
 import at.joma.apidesign.component.l2.client.api.IL2Component.Builder;
+import at.joma.apidesign.component.l2.client.api.Omitting;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
@@ -30,126 +31,137 @@ import at.joma.apidesign.component.l2.provider.impl.Component;
 import at.joma.apidesign.component.l2.provider.impl.ComponentProducer;
 
 @RunWith(CdiRunner.class)
-@AdditionalClasses({ ComponentProducer.class, Builder.class, })
+@AdditionalClasses({
+    ComponentProducer.class,
+    Builder.class,
+})
 public class OnBuilderTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OnBuilderTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OnBuilderTest.class);
 
-	ExpectedException thrown;
+    ExpectedException thrown;
 
-	@Rule
-	public ExpectedException getThrown() {
-		this.thrown = ExpectedException.none();
-		return this.thrown;
-	}
+    @Rule
+    public ExpectedException getThrown() {
+        this.thrown = ExpectedException.none();
+        return this.thrown;
+    }
 
-	@Rule
-	public TestRule getWatchman() {
-		return new TestWatcher() {
+    @Rule
+    public TestRule getWatchman() {
+        return new TestWatcher() {
 
-			@Override
-			protected void starting(Description description) {
-				LOG.info("*********** Running {} ***********", description.getMethodName());
-			}
-		};
-	}
+            @Override
+            protected void starting(Description description) {
+                LOG.info("*********** Running {} ***********", description.getMethodName());
+            }
+        };
+    }
 
-	@Test
-	@RequestScoped
-	public void testComponent_ForSameness() throws ReflectiveOperationException {
+    @Test
+    @RequestScoped
+    public void testComponent_ForSameness() throws ReflectiveOperationException {
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions//
-				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.NONE)//
-				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.NONE)//
+                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{
+                    "_parent"
+                });
 
-		Builder<AsXMLByBuilderOptions> builder = new Builder<>(AsXMLByBuilderOptions.class);
+        Builder<AsXMLByBuilderOptions> builder = new Builder<>(AsXMLByBuilderOptions.class);
 
-		IL1Component bean1 = builder//
-				.with(configuredOptions.getValueFor(SortingOrder.class))//
-				.with(configuredOptions.getValueFor(SortingDirection.class))//
-				.with((String[]) configuredOptions.getValueFor(Component.GLOBALFIELDS_OPTIONNAME))//
-				.build();
+        IL1Component bean1 = builder//
+                .with(configuredOptions.getValueFor(SortingOrder.class))//
+                .with(configuredOptions.getValueFor(SortingDirection.class))//
+                .with((String[]) configuredOptions.getValueFor(Omitting.BYFIELDNAMES_OPTIONNAME))//
+                .build();
 
-		IL1Component bean2 = builder//
-				.with(configuredOptions.getValueFor(SortingOrder.class))//
-				.with(configuredOptions.getValueFor(SortingDirection.class))//
-				.with((String[]) configuredOptions.getValueFor(Component.GLOBALFIELDS_OPTIONNAME))//
-				.build();
+        IL1Component bean2 = builder//
+                .with(configuredOptions.getValueFor(SortingOrder.class))//
+                .with(configuredOptions.getValueFor(SortingDirection.class))//
+                .with((String[]) configuredOptions.getValueFor(Omitting.BYFIELDNAMES_OPTIONNAME))//
+                .build();
 
-		Assert.assertSame(bean1, bean2);
-	}
+        Assert.assertSame(bean1, bean2);
+    }
 
-	@Test
-	public void testComponent_With_Default() throws ReflectiveOperationException {
+    @Test
+    public void testComponent_With_Default() throws ReflectiveOperationException {
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
-		configuredOptions//
-				.with(SortingOrder.ALPHABETICALLY)//
-				.with(SortingDirection.ASC)//
-				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "" });
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions//
+                .with(SortingOrder.ALPHABETICALLY)//
+                .with(SortingDirection.ASC)//
+                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{
+                    ""
+                });
 
-		Builder<AsXMLByBuilderOptions> builder = new Builder<>(AsXMLByBuilderOptions.class);
+        Builder<AsXMLByBuilderOptions> builder = new Builder<>(AsXMLByBuilderOptions.class);
 
-		IL1Component bean = builder//
-				.build();
+        IL1Component bean = builder//
+                .build();
 
-		Assert.assertNotNull(bean);
+        Assert.assertNotNull(bean);
 
-		LOG.info(bean.printConfiguration());
+        LOG.info(bean.printConfiguration());
 
-		Map<String, String> formatInfos_Expected = new HashMap<>();
-		formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
-		formatInfos_Expected.putAll(Component.getFormatInfos());
+        Map<String, String> formatInfos_Expected = new HashMap<>();
+        formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
+        formatInfos_Expected.putAll(Component.getFormatInfos());
 
-		Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
-		
-		Assert.assertEquals(3, bean.optionsCount());
+        Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
-	}
+        Assert.assertEquals(3, bean.optionsCount());
 
-	@Test
-	public void testComponent_With_GivenNoneParent() throws ReflectiveOperationException {
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
+    }
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
-				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.NONE)//
-				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+    @Test
+    public void testComponent_With_GivenNoneParent() throws ReflectiveOperationException {
 
-		IL1Component bean = new Builder<>(AsXMLByBuilderOptions.class)//
-				.with(configuredOptions)//
-				.build();
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.NONE)//
+                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{
+                    "_parent"
+                });
 
-		Assert.assertNotNull(bean);
+        IL1Component bean = new Builder<>(AsXMLByBuilderOptions.class)//
+                .with(configuredOptions)//
+                .build();
 
-		LOG.info(bean.printConfiguration());
+        Assert.assertNotNull(bean);
 
-		Map<String, String> formatInfos_Expected = new HashMap<>();
-		formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
-		formatInfos_Expected.putAll(Component.getFormatInfos());
+        LOG.info(bean.printConfiguration());
 
-		Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
-		
-		Assert.assertEquals(3, bean.optionsCount());
+        Map<String, String> formatInfos_Expected = new HashMap<>();
+        formatInfos_Expected.putAll(ComponentProducer.getFormatInfos());
+        formatInfos_Expected.putAll(Component.getFormatInfos());
 
-		Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
-	}
+        Assert.assertEquals(formatInfos_Expected, bean.getFormatInfo());
 
-	@Test
-	public void testComponent_Given_InvalidConfiguration_Then_ConstraintViolationException() throws ReflectiveOperationException {
+        Assert.assertEquals(3, bean.optionsCount());
 
-		this.thrown.expect(ConstraintViolationException.class);
-		this.thrown.expectMessage(Component.ERROR_MESSAGE_OPTIONSNOTVALID);
+        Assert.assertTrue(ListUtils.isEqualList(Arrays.asList(configuredOptions.getOptions()), Arrays.asList(bean.getOptions())));
+    }
 
-		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
-				.with(SortingOrder.GIVEN)//
-				.with(SortingDirection.ASC)//
-				.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+    @Test
+    public void testComponent_Given_InvalidConfiguration_Then_ConstraintViolationException() throws ReflectiveOperationException {
 
-		new Builder<>(AsXMLByBuilderOptions.class)//
-				.with(configuredOptions)//
-				.build();
-	}
+        this.thrown.expect(ConstraintViolationException.class);
+        this.thrown.expectMessage(Component.ERROR_MESSAGE_OPTIONSNOTVALID);
+
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
+                .with(SortingOrder.GIVEN)//
+                .with(SortingDirection.ASC)//
+                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{
+                    "_parent"
+                });
+
+        new Builder<>(AsXMLByBuilderOptions.class)//
+                .with(configuredOptions)//
+                .build();
+    }
 }

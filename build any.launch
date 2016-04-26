@@ -4,6 +4,6 @@
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${MAVEN_HOME}/bin/mvn"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-DMAVEN_OPTS=&quot;-Xmx512M -Xms128M -XX:PermSize=128M&quot;&#10;-DskipTests=${string_prompt:skipTests:true}&#10;-Declipse.limitProjectReferencesToWorkspace=false &#10;-Declipse.useProjectReferences=true&#10;-DdownloadSources=true&#10;-gs ${workspace_loc:/apidesign/maven-config/global-settings.xml}&#10;-s ${workspace_loc:/apidesign/maven-config/user-settings.xml}&#13;&#10;clean eclipse:clean eclipse:eclipse install"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-DMAVEN_OPTS=&quot;-Xmx512M -Xms128M -XX:PermSize=128M&quot;&#10;-DskipTests=${string_prompt:skipTests:true}&#10;-Declipse.limitProjectReferencesToWorkspace=false &#10;-Declipse.useProjectReferences=true&#10;-DdownloadSources=true&#10;-gs ${workspace_loc:/apidesign/maven-config/global-settings.xml}&#10;-s ${workspace_loc:/apidesign/maven-config/user-settings.xml}&#13;&#10;clean eclipse:clean eclipse:eclipse install  -Dta2mig.newgoto=true"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${selected_resource_loc}"/>
 </launchConfiguration>

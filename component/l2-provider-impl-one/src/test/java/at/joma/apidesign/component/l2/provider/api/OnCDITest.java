@@ -56,7 +56,7 @@ public class OnCDITest {
     @Inject
     @AsXML
     @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-    @Omitting(globalFields = {
+    @Omitting(byFieldNames = {
         "_parent"
     })
     IL1Component asXmlGiven;
@@ -64,7 +64,7 @@ public class OnCDITest {
     @Inject
     @AsXML
     @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-    @Omitting(globalFields = {
+    @Omitting(byFieldNames = {
         "_parent"
     })
     Instance<IL1Component> asXmlGivenInstance;
@@ -72,7 +72,7 @@ public class OnCDITest {
     @Inject
     @AsXML
     @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.ASC)
-    @Omitting(globalFields = {
+    @Omitting(byFieldNames = {
         "_parent"
     })
     Instance<IL1Component> asXmlWithInvalidOptions;
@@ -97,7 +97,7 @@ public class OnCDITest {
                 .encloseFormatInfos(Component.getFormatInfos())//
                 .with(SortingOrder.ALPHABETICALLY)//
                 .with(SortingDirection.ASC)//
-                .with(Component.GLOBALFIELDS_OPTIONNAME, new String[]{})//
+                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{})//
         ;
 
         Assert.assertNotNull(this.asXmlDefault);
@@ -126,7 +126,7 @@ public class OnCDITest {
                 .encloseFormatInfos(Component.getFormatInfos())//
                 .with(SortingOrder.GIVEN)//
                 .with(SortingDirection.NONE)//
-                .with(Component.GLOBALFIELDS_OPTIONNAME, new String[]{
+                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{
                     "_parent"
                 })//
         ;
@@ -151,7 +151,7 @@ public class OnCDITest {
                 .encloseFormatInfos(Component.getFormatInfos())//
                 .with(SortingOrder.GIVEN)//
                 .with(SortingDirection.NONE)//
-                .with(Component.GLOBALFIELDS_OPTIONNAME, new String[]{
+                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{
                     "_parent"
                 })//
         ;

@@ -128,7 +128,6 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
     @Override
     public int hashCode() {
          return Objects.hashCode(configuredOptions, formatInfos);
-//        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
@@ -140,6 +139,5 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
          } else {
          return false;
          }
-//        return EqualsBuilder.reflectionEquals(this, obj);
     }
 }

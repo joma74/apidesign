@@ -29,7 +29,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
     @ThreadScoped
     @AsXML(inScope = ThreadScoped.class)
     @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-    @Omitting(globalFields = {
+    @Omitting(byFieldNames = {
         "_parent"
     })
     Instance<IL1Component> asXmlGiven1;
@@ -38,7 +38,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
     @ThreadScoped
     @AsXML(inScope = ThreadScoped.class)
     @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-    @Omitting(globalFields = {
+    @Omitting(byFieldNames = {
         "_parent"
     })
     Instance<IL1Component> asXmlGiven2;
@@ -47,7 +47,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
     @ThreadScoped
     @AsXML(inScope = ThreadScoped.class)
     @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-    @Omitting(globalFields = {
+    @Omitting(byFieldNames = {
         "_parent"
     })
     Instance<IL1Component> asXmlGiven3;
@@ -56,7 +56,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
     @ThreadScoped
     @AsXML(inScope = ThreadScoped.class)
     @Sorting(order = SortingOrder.GIVEN, direction = SortingDirection.NONE)
-    @Omitting(globalFields = {
+    @Omitting(byFieldNames = {
         "_parent"
     })
     Instance<IL1Component> asXmlGiven4;

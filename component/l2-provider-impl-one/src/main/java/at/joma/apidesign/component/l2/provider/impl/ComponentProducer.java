@@ -40,8 +40,6 @@ public class ComponentProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(ComponentProducer.class);
 
-    private static Object SEMAPHORE = new Object();
-
     @Inject
     BeanManager beanManager;
 
@@ -57,7 +55,7 @@ public class ComponentProducer {
     }
 
     private IL2Component createWithOptions(ComponentCacheHolder il2componentCacheHolder, Map<String, String> formatInfos, SortingOrder orderOption,
-            SortingDirection directionOption, String[] globalFieldsOption) {
+            SortingDirection directionOption, String[] omitByFieldNamesOption) {
 
         ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
                 .encloseFormatInfos(formatInfos)//
@@ -69,7 +67,7 @@ public class ComponentProducer {
                                                                // fails
                 .with(orderOption)//
                 .with(directionOption)//
-                .with(Component.GLOBALFIELDS_OPTIONNAME, globalFieldsOption)//
+                .with(Omitting.BYFIELDNAMES_OPTIONNAME, omitByFieldNamesOption)//
         ;
 
         Component iL2Component = il2componentCacheHolder.getIfPresent(configuredOptions);
@@ -117,7 +115,7 @@ public class ComponentProducer {
         ComponentCacheHolder il2componentCacheHolder = beanContextOfConfig.get(targetedBean, creationalContextOfIP);
 
         return createWithOptions(il2componentCacheHolder, FORMATINFOS, configuration.sorting().order(), configuration.sorting().direction(), configuration.ommiting()
-                .globalFields());
+                .byFieldNames());
     }
 
     @SuppressWarnings({
@@ -130,7 +128,7 @@ public class ComponentProducer {
 
         SortingOrder orderOption = this.getClass().getAnnotation(Sorting.class).order();
         SortingDirection directionOption = this.getClass().getAnnotation(Sorting.class).direction();
-        String[] globalFieldsOption = this.getClass().getAnnotation(Omitting.class).globalFields();
+        String[] omitByFieldNamesOption = this.getClass().getAnnotation(Omitting.class).byFieldNames();
 
         Bean<ComponentCacheHolder> targetedBean = (Bean<ComponentCacheHolder>) beanManager.resolve(beanManager.getBeans(ComponentCacheHolder.class));
         
@@ -168,11 +166,11 @@ public class ComponentProducer {
             }
 
             if (omittingAnnotation != null) {
-                globalFieldsOption = omittingAnnotation.globalFields();
+                omitByFieldNamesOption = omittingAnnotation.byFieldNames();
             }
         }
 
-        return createWithOptions(il2componentCacheHolder, FORMATINFOS, orderOption, directionOption, globalFieldsOption);
+        return createWithOptions(il2componentCacheHolder, FORMATINFOS, orderOption, directionOption, omitByFieldNamesOption);
     }
 
     public static Map<String, String> getFormatInfos() {

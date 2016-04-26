@@ -32,7 +32,7 @@ public interface IL2Component extends IL1Component {
 
             this.configuredOptionsHolder.with(this.getClass().getAnnotation(Sorting.class).order());
             this.configuredOptionsHolder.with(this.getClass().getAnnotation(Sorting.class).direction());
-            this.configuredOptionsHolder.with(Omitting.GLOBALFIELDS_NAME, this.getClass().getAnnotation(Omitting.class).globalFields());
+            this.configuredOptionsHolder.with(Omitting.BYFIELDNAMES_OPTIONNAME, this.getClass().getAnnotation(Omitting.class).byFieldNames());
         }
 
         public IL2Component build() throws ReflectiveOperationException {
@@ -42,7 +42,7 @@ public interface IL2Component extends IL1Component {
             sortingAnnotation.setSortingOrder(this.configuredOptionsHolder.getValueFor(SortingOrder.class));
 
             OmittingOptions omittingAnnotation = OmittingOptions.class.newInstance();
-            omittingAnnotation.setGlobalFields((String[]) this.configuredOptionsHolder.getValueFor(Omitting.GLOBALFIELDS_NAME));
+            omittingAnnotation.setGlobalFields((String[]) this.configuredOptionsHolder.getValueFor(Omitting.BYFIELDNAMES_OPTIONNAME));
 
             T providerTypeInstance = providerType.newInstance();
             providerTypeInstance.setSortingOption(sortingAnnotation);
@@ -75,7 +75,7 @@ public interface IL2Component extends IL1Component {
 
         @Override
         public Builder<T> with(String[] globalFields) {
-            this.configuredOptionsHolder.with(Omitting.GLOBALFIELDS_NAME, globalFields);
+            this.configuredOptionsHolder.with(Omitting.BYFIELDNAMES_OPTIONNAME, globalFields);
             return this;
         }
     }

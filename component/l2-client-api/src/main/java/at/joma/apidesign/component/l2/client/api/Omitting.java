@@ -15,10 +15,10 @@ import javax.enterprise.util.Nonbinding;
 })
 public @interface Omitting {
 
-    public static final String GLOBALFIELDS_NAME = "globalFields";
+    public static final String BYFIELDNAMES_OPTIONNAME = "globalFields";
 
     @Nonbinding
-    String[] globalFields() default {
+    String[] byFieldNames() default {
         ""
     };
 }

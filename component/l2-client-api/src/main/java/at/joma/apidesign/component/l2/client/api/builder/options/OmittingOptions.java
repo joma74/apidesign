@@ -9,10 +9,10 @@ public class OmittingOptions extends AnnotationLiteral<Omitting> implements Omit
 
     private static final long serialVersionUID = -2363887785491676339L;
 
-    private String[] globalFields = this.getClass().getAnnotation(Omitting.class).globalFields();
+    private String[] globalFields = this.getClass().getAnnotation(Omitting.class).byFieldNames();
 
     @Override
-    public String[] globalFields() {
+    public String[] byFieldNames() {
         return this.globalFields;
     }
 

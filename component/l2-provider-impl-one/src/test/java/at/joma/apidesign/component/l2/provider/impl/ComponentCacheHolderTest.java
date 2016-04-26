@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.joma.apidesign.component.l2.client.api.Omitting;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
@@ -47,7 +48,7 @@ public class ComponentCacheHolderTest {
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
 		configuredOptions.with(SortingDirection.ASC);
 		configuredOptions.with(SortingOrder.ALPHABETICALLY);
-		configuredOptions.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+		configuredOptions.with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[] { "_parent" });
 		Component configured = new Component(configuredOptions);
 		il2componentCacheHolder.put(configuredOptions, configured);
 		Assert.assertThat(il2componentCacheHolder.getCache().size(), is(1l));
@@ -72,7 +73,7 @@ public class ComponentCacheHolderTest {
 		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
 		configuredOptions.with(SortingDirection.ASC);
 		configuredOptions.with(SortingOrder.ALPHABETICALLY);
-		configuredOptions.with(Component.GLOBALFIELDS_OPTIONNAME, new String[] { "_parent" });
+		configuredOptions.with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[] { "_parent" });
 		Component configured = new Component(configuredOptions);
 
 		il2componentCacheHolder.put(configuredOptions, configured);
