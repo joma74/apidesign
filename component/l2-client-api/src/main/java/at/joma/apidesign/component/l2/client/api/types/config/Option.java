@@ -3,6 +3,7 @@ package at.joma.apidesign.component.l2.client.api.types.config;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -17,7 +18,8 @@ public class Option implements IOption, Serializable {
     public enum OptionType {
         ENUM(Enum.class),
         STRINGARRAY(String[].class),
-        STRING(String.class);
+        STRING(String.class),
+        CLAZZARRAY(Class[].class);
 
         final Class<?> type;
 
@@ -43,11 +45,11 @@ public class Option implements IOption, Serializable {
         this.type = OptionType.ENUM;
     }
 
-    public Option(String optionName, String[] optionValue) {
+    public Option(String optionName, String[] optionValues) {
         Preconditions.checkNotNull(optionName);
-        Preconditions.checkNotNull(optionValue);
+        Preconditions.checkNotNull(optionValues);
         this.name = optionName;
-        this.value = Arrays.toString(optionValue);
+        this.value = Arrays.toString(optionValues);
         this.type = OptionType.STRINGARRAY;
     }
 
@@ -58,13 +60,22 @@ public class Option implements IOption, Serializable {
         this.value = optionValue;
         this.type = OptionType.STRING;
     }
+    
+    public Option(String optionName, Class<?>[] optionValues) {
+        Preconditions.checkNotNull(optionName);
+        Preconditions.checkNotNull(optionValues);
+        this.name = optionName;
+        String[] intermediate = new String[optionValues.length];
+        for(Class<?> optionValue : optionValues){
+        	ArrayUtils.add(intermediate, optionValue.getName());
+        }
+        this.value = Arrays.toString(intermediate);
+        this.type = OptionType.CLAZZARRAY;
+    }
 
     public String[] convertValueToArray() {
-
         String joinedMinusBrackets = this.value.substring(1, this.value.length() - 1);
-
         return joinedMinusBrackets.split(", ");
-
     }
 
     @Override
@@ -88,19 +99,11 @@ public class Option implements IOption, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        // if (obj instanceof Option) {
-        // final Option other = (Option) obj;
-        // return Objects.equal(name, other.name) && Objects.equal(value,
-        // other.value) && Objects.equal(type, other.type);
-        // } else {
-        // return false;
-        // }
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     @Override
     public int hashCode() {
-        // return Objects.hashCode(name, value, type);
         return HashCodeBuilder.reflectionHashCode(this);
     }
 

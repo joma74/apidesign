@@ -71,7 +71,7 @@ public class CDIMultiThreadTest {
 
 		long duration = (System.nanoTime() - start);
 		double milliseconds = duration / 1e6;
-		LOG.info("Created " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded per thread scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
+		LOG.info("Delivered " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded per thread scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
 				/ (THREAD_BATCH_SIZE * ROUNDS) + "[MS]/instance");
 
 	}
@@ -118,7 +118,7 @@ public class CDIMultiThreadTest {
 
 		long duration = (System.nanoTime() - start);
 		double milliseconds = duration / 1e6;
-		LOG.info("Created " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded same scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
+		LOG.info("Delivered " + THREAD_BATCH_SIZE * ROUNDS + " multithreaded same scope injections took " + milliseconds + "[MS], t.i. " + milliseconds
 				/ (THREAD_BATCH_SIZE * ROUNDS) + "[MS]/instance");
 	}
 

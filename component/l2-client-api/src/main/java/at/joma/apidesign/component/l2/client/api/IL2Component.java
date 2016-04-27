@@ -33,16 +33,21 @@ public interface IL2Component extends IL1Component {
             this.configuredOptionsHolder.with(this.getClass().getAnnotation(Sorting.class).order());
             this.configuredOptionsHolder.with(this.getClass().getAnnotation(Sorting.class).direction());
             this.configuredOptionsHolder.with(Omitting.BYFIELDNAMES_OPTIONNAME, this.getClass().getAnnotation(Omitting.class).byFieldNames());
+            this.configuredOptionsHolder.with(Omitting.BYFIELDANNOTATIONS_OPTIONNAME, this.getClass().getAnnotation(Omitting.class).byFieldAnnotations());
+            this.configuredOptionsHolder.with(Omitting.BYFIELDCLASSES_OPTIONNAME, this.getClass().getAnnotation(Omitting.class).byFieldClasses());
         }
 
-        public IL2Component build() throws ReflectiveOperationException {
+		@SuppressWarnings("unchecked")
+		public IL2Component build() throws ReflectiveOperationException {
 
             SortingOptions sortingAnnotation = SortingOptions.class.newInstance();
             sortingAnnotation.setSortingDirection(this.configuredOptionsHolder.getValueFor(SortingDirection.class));
             sortingAnnotation.setSortingOrder(this.configuredOptionsHolder.getValueFor(SortingOrder.class));
 
             OmittingOptions omittingAnnotation = OmittingOptions.class.newInstance();
-            omittingAnnotation.setGlobalFields((String[]) this.configuredOptionsHolder.getValueFor(Omitting.BYFIELDNAMES_OPTIONNAME));
+            omittingAnnotation.setByFieldNames((String[]) this.configuredOptionsHolder.getValueFor(Omitting.BYFIELDNAMES_OPTIONNAME));
+            omittingAnnotation.setByFieldAnnotations((Class<? extends Annotation>[])this.configuredOptionsHolder.getValueFor(Omitting.BYFIELDANNOTATIONS_OPTIONNAME));
+            omittingAnnotation.setByFieldClasses((Class<?>[]) this.configuredOptionsHolder.getValueFor(Omitting.BYFIELDCLASSES_OPTIONNAME));
 
             T providerTypeInstance = providerType.newInstance();
             providerTypeInstance.setSortingOption(sortingAnnotation);

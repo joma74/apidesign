@@ -89,6 +89,13 @@ public class ComponentProducer {
                     if (!constraintViolations.isEmpty()) {
                         throw new ConstraintViolationException(Component.ERROR_MESSAGE_OPTIONSNOTVALID, constraintViolations);
                     }
+                    try {
+                    	iL2Component.initializeSerializingInstance();
+        			} catch (Exception e) {
+        				LOG.error(e.getMessage(), e);
+        				throw e;
+        			}
+                    
                     il2componentCacheHolder.put(configuredOptions, iL2Component);
                 }
             }
