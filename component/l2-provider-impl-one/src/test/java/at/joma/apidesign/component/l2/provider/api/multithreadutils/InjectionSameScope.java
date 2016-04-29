@@ -25,9 +25,9 @@ public class InjectionSameScope implements Callable<Void> {
     @AsXML
     Instance<IL1Component> asXmlDefaultInstance;
 
-    private CreationalContext creationalContext;
+    private CreationalContext<?> creationalContext;
 
-    public void setCreationalContext(CreationalContext creationalContext) {
+    public void setCreationalContext(CreationalContext<?> creationalContext) {
         this.creationalContext = creationalContext;
     }
 

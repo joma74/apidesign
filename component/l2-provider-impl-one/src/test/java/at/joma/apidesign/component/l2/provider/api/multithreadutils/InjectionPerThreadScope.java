@@ -63,7 +63,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
 
     private ThreadContext threadContext;
 
-    private CreationalContext creationalContext;
+    private CreationalContext<?> creationalContext;
 
     @Inject
     @PostConstruct
@@ -71,7 +71,7 @@ public class InjectionPerThreadScope implements Callable<Void> {
         this.threadContext = extension.getThreadContext();
     }
 
-    public void setCreationalContext(CreationalContext creationalContext) {
+    public void setCreationalContext(CreationalContext<?> creationalContext) {
         this.creationalContext = creationalContext;
     }
 
