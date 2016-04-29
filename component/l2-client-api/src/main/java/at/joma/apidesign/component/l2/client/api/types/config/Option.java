@@ -1,11 +1,19 @@
 package at.joma.apidesign.component.l2.client.api.types.config;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l1.client.api.config.IOption;
 
@@ -14,6 +22,8 @@ import com.google.common.base.Preconditions;
 public class Option implements IOption, Serializable {
 
     private static final long serialVersionUID = 5979614171013169677L;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(Option.class);
 
     public enum OptionType {
         ENUM(Enum.class),
@@ -65,16 +75,19 @@ public class Option implements IOption, Serializable {
         Preconditions.checkNotNull(optionName);
         Preconditions.checkNotNull(optionValues);
         this.name = optionName;
-        String[] intermediate = new String[optionValues.length];
+        Set<String> intermediate = new HashSet<>(optionValues.length);
         for(Class<?> optionValue : optionValues){
-        	ArrayUtils.add(intermediate, optionValue.getName());
+            intermediate.add(optionValue.getName());
         }
-        this.value = Arrays.toString(intermediate);
+        this.value = Arrays.toString(intermediate.toArray());
         this.type = OptionType.CLAZZARRAY;
     }
 
     public String[] convertValueToArray() {
         String joinedMinusBrackets = this.value.substring(1, this.value.length() - 1);
+        if(joinedMinusBrackets.isEmpty()){
+            return new String[]{};
+        }
         return joinedMinusBrackets.split(", ");
     }
 
@@ -90,6 +103,22 @@ public class Option implements IOption, Serializable {
     @Override
     public String getValue() {
         return this.value;
+    }
+    
+    @Override
+    public IOption deepClone() {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (IOption) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -6,4 +6,6 @@ public interface IOption {
 
     public abstract String getValue();
 
+    IOption deepClone();
+
 }

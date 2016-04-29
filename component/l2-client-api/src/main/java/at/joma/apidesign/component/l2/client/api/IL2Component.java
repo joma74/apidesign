@@ -15,6 +15,7 @@ import at.joma.apidesign.component.l2.client.api.builder.options.SortingOptions;
 import at.joma.apidesign.component.l2.client.api.types.SortingDirection;
 import at.joma.apidesign.component.l2.client.api.types.SortingOrder;
 import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsHolder;
+import at.joma.apidesign.component.l2.client.api.types.config.Option;
 
 public interface IL2Component extends IL1Component {
 
@@ -62,7 +63,10 @@ public interface IL2Component extends IL1Component {
 
         @Override
         public Builder<T> with(ConfiguredOptionsHolder configuredOptionsHolder) {
-            this.configuredOptionsHolder = configuredOptionsHolder;
+            for(Option option : configuredOptionsHolder.getOptions()){
+                this.configuredOptionsHolder.with(option);
+                this.configuredOptionsHolder.encloseFormatInfos(configuredOptionsHolder.getFormatInfo());
+            }
             return this;
         }
 

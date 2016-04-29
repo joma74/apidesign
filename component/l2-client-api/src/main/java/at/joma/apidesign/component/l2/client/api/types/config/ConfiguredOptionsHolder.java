@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -17,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.joma.apidesign.component.l1.client.api.config.IConfiguration;
+import at.joma.apidesign.component.l1.client.api.config.IOption;
 import at.joma.apidesign.component.l2.client.api.types.config.Option.OptionType;
+import at.joma.apidesign.component.l2.client.api.types.config.converters.StringArrClassArrConverter;
 
 import com.google.common.base.Objects;
 
@@ -129,6 +129,12 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 		this.configuredOptions.put(optionName, conf);
 		return this;
 	}
+	
+	public ConfiguredOptionsHolder with(Option option) {
+        IOption conf = option.deepClone();
+        this.configuredOptions.put(conf.getName(), (Option)conf);
+        return this;
+    }
 
 	public ConfiguredOptionsHolder encloseFormatInfos(Map<String, String> formatInfos) {
 		this.formatInfos.putAll(formatInfos);
@@ -153,40 +159,5 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 		} else {
 			return false;
 		}
-	}
-
-	public abstract class TypeConverter<S, T> {
-
-		public abstract T convert(S source);
-
-	}
-
-	public class StringClassConverter extends TypeConverter<String, Class<?>> {
-
-		@Override
-		public Class<?> convert(String className) {
-			try {
-				return Class.forName(className);
-			} catch (ClassNotFoundException e) {
-				LOG.error(e.getMessage(), e);
-				throw new RuntimeException(e);
-			}
-		}
-
-	}
-
-	public class StringArrClassArrConverter extends TypeConverter<String[], Class<?>[]> {
-
-		StringClassConverter stringClassConverter = new StringClassConverter();
-
-		@Override
-		public Class<?>[] convert(String[] classNames) {
-			List<Class<?>> result = new ArrayList<>();
-			for (String className : classNames) {
-				result.add(stringClassConverter.convert(className));
-			}
-			return result.toArray(new Class<?>[result.size()]);
-		}
-
 	}
 }
