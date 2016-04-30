@@ -77,16 +77,6 @@ public class Component implements IL2Component {
         this.configuredOptions = new WeakReference<>(configuredOptions);
     }
 
-    public Component(Map<String, String> formatInfos, SortingOrder orderOption, SortingDirection directionOption, String[] globalFieldsOption) {
-        this.configuredOptions.get()//
-                .encloseFormatInfos(formatInfos)//
-                .with(orderOption)//
-                .with(directionOption)//
-                .with(Omitting.BYFIELDNAMES_OPTIONNAME, globalFieldsOption)//
-        ;
-        encloseFormatInfo(this.configuredOptions.get());
-    }
-
     private void encloseFormatInfo(ConfiguredOptionsHolder configuredOptions) {
         configuredOptions//
                 .encloseFormatInfos(FORMATINFOS)//

@@ -10,55 +10,63 @@ import at.joma.apidesign.component.l2.client.api.types.config.ConfiguredOptionsH
 
 public class ComponentRulesTableTest {
 
-    @Test
-    public void checkAValidConfig() {
+	@Test
+	public void checkAValidConfig() {
 
-        ConfiguredOptionsHolder validOptions = new ConfiguredOptionsHolder();
-        validOptions//
-                .encloseFormatInfos(ComponentProducer.getFormatInfos())//
-                .encloseFormatInfos(Component.getFormatInfos())//
-                .with(SortingOrder.ALPHABETICALLY)//
-                .with(SortingDirection.ASC)//
-                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{})//
-        ;
+		ConfiguredOptionsHolder validOptions = new ConfiguredOptionsHolder();
+		validOptions//
+				.encloseFormatInfos(ComponentProducer.getFormatInfos())//
+				.encloseFormatInfos(Component.getFormatInfos())//
+				.with(SortingOrder.ALPHABETICALLY)//
+				.with(SortingDirection.ASC)//
+				.with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[] {})//
+				.with(Omitting.BYFIELDANNOTATIONS_OPTIONNAME, new Class[] {})//
+				.with(Omitting.BYFIELDCLASSES_OPTIONNAME, new Class[] {})//
+		;
 
-        Component c = new Component(validOptions);
+		Component c = new Component(validOptions);
 
-        Assert.assertTrue(c.isValid());
-    }
+		Assert.assertTrue(c.isValid());
+	}
 
-    @Test
-    public void checkANotValidConfig_1() {
+	@Test
+	public void checkANotValidConfig_1() {
 
-        ConfiguredOptionsHolder invalidOptions = new ConfiguredOptionsHolder();
-        invalidOptions//
-                .encloseFormatInfos(ComponentProducer.getFormatInfos())//
-                .encloseFormatInfos(Component.getFormatInfos())//
-                .with(SortingOrder.GIVEN)//
-                .with(SortingDirection.ASC)//
-                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{})//
-        ;
+		ConfiguredOptionsHolder invalidOptions = new ConfiguredOptionsHolder();
+		invalidOptions//
+				.encloseFormatInfos(ComponentProducer.getFormatInfos())//
+				.encloseFormatInfos(Component.getFormatInfos())//
+				.with(SortingOrder.GIVEN)//
+				.with(SortingDirection.ASC)//
+				.with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[] {})//
+				.with(Omitting.BYFIELDANNOTATIONS_OPTIONNAME, new Class[] {})//
+				.with(Omitting.BYFIELDCLASSES_OPTIONNAME, new Class[] {})//
 
-        Component c = new Component(invalidOptions);
+		;
 
-        Assert.assertFalse(c.isValid());
-    }
+		Component c = new Component(invalidOptions);
 
-    @Test
-    public void checkANotValidConfig_2() {
+		Assert.assertFalse(c.isValid());
+	}
 
-        ConfiguredOptionsHolder invalidOptions = new ConfiguredOptionsHolder();
-        invalidOptions//
-                .encloseFormatInfos(ComponentProducer.getFormatInfos())//
-                .encloseFormatInfos(Component.getFormatInfos())//
-                .with(SortingOrder.ALPHABETICALLY)//
-                .with(SortingDirection.NONE)//
-                .with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[]{})//
-        ;
+	@Test
+	public void checkANotValidConfig_2() {
 
-        Component c = new Component(invalidOptions);
+		ConfiguredOptionsHolder invalidOptions = new ConfiguredOptionsHolder();
+		invalidOptions//
+				.encloseFormatInfos(ComponentProducer.getFormatInfos())//
+				.encloseFormatInfos(Component.getFormatInfos())//
+				.with(SortingOrder.ALPHABETICALLY)//
+				.with(SortingDirection.NONE)//
+				.with(Omitting.BYFIELDNAMES_OPTIONNAME, new String[] {})//
+				.with(Omitting.BYFIELDANNOTATIONS_OPTIONNAME, new Class[] {})//
+				.with(Omitting.BYFIELDCLASSES_OPTIONNAME, new Class[] {})//
 
-        Assert.assertFalse(c.isValid());
-    }
+		;
+
+		Component c = new Component(invalidOptions);
+
+		Assert.assertFalse(c.isValid());
+	}
 
 }

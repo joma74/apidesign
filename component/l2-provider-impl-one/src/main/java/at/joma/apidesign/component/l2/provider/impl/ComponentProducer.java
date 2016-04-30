@@ -1,5 +1,6 @@
 package at.joma.apidesign.component.l2.provider.impl;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,150 +39,171 @@ import at.joma.apidesign.component.l2.provider.api.builder.AsXMLByBuilder;
 @Omitting
 public class ComponentProducer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ComponentProducer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ComponentProducer.class);
 
-    @Inject
-    BeanManager beanManager;
+	@Inject
+	BeanManager beanManager;
 
-    @Inject
-    @Named(ComponentCacheHolder.CDI_NAME)
-    ComponentCacheHolder il2componentCacheHolderDONOTUSE;
+	@Inject
+	@Named(ComponentCacheHolder.CDI_NAME)
+	ComponentCacheHolder il2componentCacheHolderDONOTUSE;
 
-    protected static final Map<String, String> FORMATINFOS = new HashMap<>();
+	protected static final Map<String, String> FORMATINFOS = new HashMap<>();
 
-    static {
-        FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_FORMAT, "XML");
-        FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_PRODUCER, ComponentProducer.class.getName());
-    }
+	static {
+		FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_FORMAT, "XML");
+		FORMATINFOS.put(IConfiguration.FORMATINFO_KEY_PRODUCER, ComponentProducer.class.getName());
+	}
 
-    private IL2Component createWithOptions(ComponentCacheHolder il2componentCacheHolder, Map<String, String> formatInfos, SortingOrder orderOption,
-            SortingDirection directionOption, String[] omitByFieldNamesOption) {
+	private IL2Component createWithOptions( //
+			ComponentCacheHolder il2componentCacheHolder, //
+			Map<String, String> formatInfos, //
+			SortingOrder orderOption, //
+			SortingDirection directionOption, //
+			String[] omitByFieldNamesOption, //
+			Class<? extends Annotation>[] omitByFieldAnnotationsOption, //
+			Class<?>[] omitByFieldClassesOption//
+	) {
 
-        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
-                .encloseFormatInfos(formatInfos)//
-                .encloseFormatInfos(Component.getFormatInfos())// else the
-                                                               // reflective
-                                                               // hashCode
-                                                               // check for
-                                                               // sameness
-                                                               // fails
-                .with(orderOption)//
-                .with(directionOption)//
-                .with(Omitting.BYFIELDNAMES_OPTIONNAME, omitByFieldNamesOption)//
-        ;
+		ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder()//
+				.encloseFormatInfos(formatInfos)//
+				.encloseFormatInfos(Component.getFormatInfos())// else the
+																// reflective
+																// hashCode
+																// check for
+																// sameness
+																// fails
+				.with(orderOption)//
+				.with(directionOption)//
+				.with(Omitting.BYFIELDNAMES_OPTIONNAME, omitByFieldNamesOption)//
+				.with(Omitting.BYFIELDANNOTATIONS_OPTIONNAME, omitByFieldAnnotationsOption)//
+				.with(Omitting.BYFIELDCLASSES_OPTIONNAME, omitByFieldClassesOption);
 
-        Component iL2Component = il2componentCacheHolder.getIfPresent(configuredOptions);
-        if (iL2Component == null) {
-            synchronized (new Integer(configuredOptions.hashCode())) {
-                iL2Component = il2componentCacheHolder.getIfPresent(configuredOptions);
-                if (iL2Component == null) {
-                    if (LOG.isDebugEnabled()) {
-                        for (Entry<ConfiguredOptionsHolder, Component> entry : il2componentCacheHolder.getCache().asMap().entrySet()) {
-                            ConfiguredOptionsHolder coh = entry.getKey();
-                            LOG.debug(System.lineSeparator() + "ComponentCacheHolder Report for Key " + ConfiguredOptionsHolder.class.getSimpleName()
-                                    + " having a hashcode of " + coh.hashCode() + " and represents a configuration of " + coh.printConfiguration());
-                        }
-                    }
-                    iL2Component = new Component(configuredOptions);
-                    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-                    Validator validator = validatorFactory.getValidator();
-                    Set<ConstraintViolation<Component>> constraintViolations = validator.validate(iL2Component);
-                    if (!constraintViolations.isEmpty()) {
-                        throw new ConstraintViolationException(Component.ERROR_MESSAGE_OPTIONSNOTVALID, constraintViolations);
-                    }
-                    try {
-                    	iL2Component.initializeSerializingInstance();
-        			} catch (Exception e) {
-        				LOG.error(e.getMessage(), e);
-        				throw e;
-        			}
-                    
-                    il2componentCacheHolder.put(configuredOptions, iL2Component);
-                }
-            }
-        }
-        return iL2Component;
-    }
+		Component iL2Component = il2componentCacheHolder.getIfPresent(configuredOptions);
+		if (iL2Component == null) {
+			synchronized (new Integer(configuredOptions.hashCode())) {
+				iL2Component = il2componentCacheHolder.getIfPresent(configuredOptions);
+				if (iL2Component == null) {
+					if (LOG.isDebugEnabled()) {
+						for (Entry<ConfiguredOptionsHolder, Component> entry : il2componentCacheHolder.getCache().asMap().entrySet()) {
+							ConfiguredOptionsHolder coh = entry.getKey();
+							LOG.debug(System.lineSeparator() + "ComponentCacheHolder Report for Key " + ConfiguredOptionsHolder.class.getSimpleName() + " having a hashcode of "
+									+ coh.hashCode() + " and represents a configuration of " + coh.printConfiguration());
+						}
+					}
+					iL2Component = new Component(configuredOptions);
+					ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+					Validator validator = validatorFactory.getValidator();
+					Set<ConstraintViolation<Component>> constraintViolations = validator.validate(iL2Component);
+					if (!constraintViolations.isEmpty()) {
+						throw new ConstraintViolationException(Component.ERROR_MESSAGE_OPTIONSNOTVALID, constraintViolations);
+					}
+					try {
+						iL2Component.initializeSerializingInstance();
+					} catch (Exception e) {
+						LOG.error(e.getMessage(), e);
+						throw e;
+					}
 
-    @SuppressWarnings({
-        "rawtypes",
-        "unchecked"
-    })
-    @Produces
-    @AsXMLByBuilder
-    public IL2Component doProduceForBuilder(InjectionPoint ip) throws NoSuchMethodException {
+					il2componentCacheHolder.put(configuredOptions, iL2Component);
+				}
+			}
+		}
+		return iL2Component;
+	}
 
-        AsXMLByBuilder configuration = (AsXMLByBuilder) ip.getQualifiers().iterator().next();
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Produces
+	@AsXMLByBuilder
+	public IL2Component doProduceForBuilder(InjectionPoint ip) throws NoSuchMethodException {
 
-        Bean<ComponentCacheHolder> targetedBean = (Bean<ComponentCacheHolder>) beanManager.resolve(beanManager.getBeans(ComponentCacheHolder.class));
+		AsXMLByBuilder configuration = (AsXMLByBuilder) ip.getQualifiers().iterator().next();
 
-        Context beanContextOfConfig = beanManager.getContext(configuration.inScope());
+		Bean<ComponentCacheHolder> targetedBean = (Bean<ComponentCacheHolder>) beanManager.resolve(beanManager.getBeans(ComponentCacheHolder.class));
 
-        CreationalContext creationalContextOfIP = beanManager.createCreationalContext(null);
+		Context beanContextOfConfig = beanManager.getContext(configuration.inScope());
 
-        ComponentCacheHolder il2componentCacheHolder = beanContextOfConfig.get(targetedBean, creationalContextOfIP);
+		CreationalContext creationalContextOfIP = beanManager.createCreationalContext(null);
 
-        return createWithOptions(il2componentCacheHolder, FORMATINFOS, configuration.sorting().order(), configuration.sorting().direction(), configuration.ommiting()
-                .byFieldNames());
-    }
+		ComponentCacheHolder il2componentCacheHolder = beanContextOfConfig.get(targetedBean, creationalContextOfIP);
 
-    @SuppressWarnings({
-        "rawtypes",
-        "unchecked"
-    })
-    @Produces
-    @AsXML
-    public IL2Component doProduceForCDI(InjectionPoint ip) throws NoSuchMethodException {
+		return createWithOptions(//
+				il2componentCacheHolder, //
+				FORMATINFOS, //
+				configuration.sorting().order(), //
+				configuration.sorting().direction(), //
+				configuration.ommiting().byFieldNames(), //
+				configuration.ommiting().byFieldAnnotations(), //
+				configuration.ommiting().byFieldClasses() //
+		);
+	}
 
-        SortingOrder orderOption = this.getClass().getAnnotation(Sorting.class).order();
-        SortingDirection directionOption = this.getClass().getAnnotation(Sorting.class).direction();
-        String[] omitByFieldNamesOption = this.getClass().getAnnotation(Omitting.class).byFieldNames();
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Produces
+	@AsXML
+	public IL2Component doProduceForCDI(InjectionPoint ip) throws NoSuchMethodException {
 
-        Bean<ComponentCacheHolder> targetedBean = (Bean<ComponentCacheHolder>) beanManager.resolve(beanManager.getBeans(ComponentCacheHolder.class));
-        
-        ComponentCacheHolder il2componentCacheHolder;
-        
-        if(ip.getBean() != null){
-            
-            Context beanContextOfIP = beanManager.getContext(ip.getBean().getScope());
+		SortingOrder orderOption = this.getClass().getAnnotation(Sorting.class).order();
+		SortingDirection directionOption = this.getClass().getAnnotation(Sorting.class).direction();
+		String[] omitByFieldNamesOption = this.getClass().getAnnotation(Omitting.class).byFieldNames();
+		Class<? extends Annotation>[] omitByFieldAnnotationsOption = this.getClass().getAnnotation(Omitting.class).byFieldAnnotations();
+		Class<?>[] omitByFieldClassesOption = this.getClass().getAnnotation(Omitting.class).byFieldClasses();
 
-            CreationalContext creationalContextOfIP = beanManager.createCreationalContext(ip.getBean());
+		Bean<ComponentCacheHolder> targetedBean = (Bean<ComponentCacheHolder>) beanManager.resolve(beanManager.getBeans(ComponentCacheHolder.class));
 
-            il2componentCacheHolder = beanContextOfIP.get(targetedBean, creationalContextOfIP);
-        } else {
-            
-            AsXML configuration = (AsXML) ip.getQualifiers().iterator().next();
-            
-            Context beanContextOfConfig = beanManager.getContext(configuration.inScope());
+		ComponentCacheHolder il2componentCacheHolder;
 
-            CreationalContext creationalContextOfIP = beanManager.createCreationalContext(null);
+		if (ip.getBean() != null) {
 
-            il2componentCacheHolder = beanContextOfConfig.get(targetedBean, creationalContextOfIP);
-        }
+			Context beanContextOfIP = beanManager.getContext(ip.getBean().getScope());
 
-        Annotated annotated = ip.getAnnotated();
+			CreationalContext creationalContextOfIP = beanManager.createCreationalContext(ip.getBean());
 
-        if (annotated != null) {
+			il2componentCacheHolder = beanContextOfIP.get(targetedBean, creationalContextOfIP);
+		} else {
 
-            Sorting sortingAnnotation = annotated.getAnnotation(Sorting.class);
+			AsXML configuration = (AsXML) ip.getQualifiers().iterator().next();
 
-            Omitting omittingAnnotation = annotated.getAnnotation(Omitting.class);
+			Context beanContextOfConfig = beanManager.getContext(configuration.inScope());
 
-            if (sortingAnnotation != null) {
-                orderOption = sortingAnnotation.order();
-                directionOption = sortingAnnotation.direction();
-            }
+			CreationalContext creationalContextOfIP = beanManager.createCreationalContext(null);
 
-            if (omittingAnnotation != null) {
-                omitByFieldNamesOption = omittingAnnotation.byFieldNames();
-            }
-        }
+			il2componentCacheHolder = beanContextOfConfig.get(targetedBean, creationalContextOfIP);
+		}
 
-        return createWithOptions(il2componentCacheHolder, FORMATINFOS, orderOption, directionOption, omitByFieldNamesOption);
-    }
+		Annotated annotated = ip.getAnnotated();
 
-    public static Map<String, String> getFormatInfos() {
-        return Collections.unmodifiableMap(FORMATINFOS);
-    }
+		if (annotated != null) {
+
+			Sorting sortingAnnotation = annotated.getAnnotation(Sorting.class);
+
+			Omitting omittingAnnotation = annotated.getAnnotation(Omitting.class);
+
+			if (sortingAnnotation != null) {
+				orderOption = sortingAnnotation.order();
+				directionOption = sortingAnnotation.direction();
+			}
+
+			if (omittingAnnotation != null) {
+				omitByFieldNamesOption = omittingAnnotation.byFieldNames();
+				omitByFieldAnnotationsOption = omittingAnnotation.byFieldAnnotations();
+				omitByFieldClassesOption = omittingAnnotation.byFieldClasses();
+			}
+		}
+
+		return createWithOptions( //
+				il2componentCacheHolder, //
+				FORMATINFOS, //
+				orderOption, //
+				directionOption, //
+				omitByFieldNamesOption, //
+				omitByFieldAnnotationsOption, //
+				omitByFieldClassesOption //
+		);
+	}
+
+	public static Map<String, String> getFormatInfos() {
+		return Collections.unmodifiableMap(FORMATINFOS);
+	}
 
 }
