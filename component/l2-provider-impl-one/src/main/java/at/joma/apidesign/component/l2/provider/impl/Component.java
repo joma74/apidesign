@@ -126,16 +126,7 @@ public class Component implements IL2Component {
         Query<ValidOptionsTuple> isValidQuery =
                 and(QueryFactory.in(ValidOptionsTuple.VOT_SORTINGORDER, sortingOrder), QueryFactory.in(ValidOptionsTuple.VOT_SORTINGDIRECTION, sortingDirection));
 
-        if (VALIDOPTIONSTUPLES.retrieve(isValidQuery).size() >= 1) {
-            try {
-                initializeSerializingInstance();
-            } catch (Exception e) {
-                LOG.error(e.getMessage(), e);
-                return false;
-            }
-            return true;
-        }
-        return false;
+        return VALIDOPTIONSTUPLES.retrieve(isValidQuery).size() >= 1;
     }
 
     public void initializeSerializingInstance() {
