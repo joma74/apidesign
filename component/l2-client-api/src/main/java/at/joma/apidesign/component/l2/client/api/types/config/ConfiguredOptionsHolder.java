@@ -70,6 +70,14 @@ public class ConfiguredOptionsHolder implements IConfiguration, Serializable {
 		}
 		throw new IllegalArgumentException(MESSAGE_FAILURE_NOCONFIGUREDOPTIONFOR + optionName);
 	}
+	
+	public boolean isValueSet(String optionName) {
+		Option conf = this.configuredOptions.get(optionName);
+		if (conf != null) {
+			return (null != conf.getValue());
+		}
+		return false;
+	}
 
 	@Override
 	public int optionsCount() {
