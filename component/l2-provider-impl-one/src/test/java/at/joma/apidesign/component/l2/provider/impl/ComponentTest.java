@@ -40,16 +40,25 @@ public class ComponentTest {
             + "  <c>\n"//
             + "    <d>d</d>\n"//
             + "  </c>\n"//
-            + "  <e>e</e>\n"
+            + "  <e>e</e>\n"//
             + "</at.joma.apidesign.component.l2.provider.impl.out1.OUT__Ser__1>";
 
     private static final String XMLSERIALIZED_OUT_EXPECTED_2 = ""//
             + "<at.joma.apidesign.component.l2.provider.impl.out1.OUT__Ser__1>\n"//
-            + "  <e>e</e>\n"
+            + "  <e>e</e>\n"//
             + "  <c>\n"//
             + "    <d>d</d>\n"//
             + "  </c>\n"//
             + "</at.joma.apidesign.component.l2.provider.impl.out1.OUT__Ser__1>";
+
+    private static final String XMLSERIALIZED_OUT_EXPECTED_GIVEN = ""//
+            + "<at.joma.apidesign.component.l2.provider.impl.out1.OUT__Ser__1>\n"//
+            + "  <__parent>_parent</__parent>\n"//
+            + "  <c>\n"//
+            + "    <d>d</d>\n"//
+            + "  </c>\n"//
+            + "  <b/>\n"//
+            + "  <e>e</e>\n" + "</at.joma.apidesign.component.l2.provider.impl.out1.OUT__Ser__1>";
 
     private static final String XMLSERIALIZED_OUT_EXPECTED_DEFAULT = ""//
             + "<at.joma.apidesign.component.l2.provider.impl.out1.OUT__Ser__1>\n"//
@@ -58,7 +67,7 @@ public class ComponentTest {
             + "  <c>\n"//
             + "    <d>d</d>\n"//
             + "  </c>\n"//
-            + "  <e>e</e>\n"
+            + "  <e>e</e>\n"//
             + "</at.joma.apidesign.component.l2.provider.impl.out1.OUT__Ser__1>";
 
     @Test
@@ -109,6 +118,27 @@ public class ComponentTest {
         OUT_Ser_1 out_Ser_1 = new OUT_Ser_1();
 
         Assert.assertEquals(XMLSERIALIZED_OUT_EXPECTED_2, configured.serialize(out_Ser_1));
+    }
+
+    @Test
+    public void testSerialize_Given() {
+
+        ConfiguredOptionsHolder configuredOptions = new ConfiguredOptionsHolder();
+        configuredOptions.with(SortingDirection.NONE);
+        configuredOptions.with(SortingOrder.GIVEN);
+
+        OmittingOptions omittingOptions = new OmittingOptions();
+        configuredOptions.with(Omitting.BYFIELDNAMES_OPTIONNAME, omittingOptions.byFieldNames());
+        configuredOptions.with(Omitting.BYFIELDANNOTATIONS_OPTIONNAME, omittingOptions.byFieldAnnotations());
+        configuredOptions.with(Omitting.BYFIELDCLASSES_OPTIONNAME, omittingOptions.byFieldClasses());
+        Component configured = new Component(configuredOptions);
+
+        Assert.assertTrue(configured.isValid());
+        configured.initializeSerializingInstance();
+
+        OUT_Ser_1 out_Ser_1 = new OUT_Ser_1();
+
+        Assert.assertEquals(XMLSERIALIZED_OUT_EXPECTED_GIVEN, configured.serialize(out_Ser_1));
     }
 
     @Test

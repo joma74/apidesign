@@ -10,9 +10,9 @@ public class OUT_Ser_1 {
     
     public String _parent = new String("_parent");
     
-    public OUT_OmitByClassTest b = new OUT_OmitByClassTest();
-    
     public OUT_DoNotOmitByClassTest c = new OUT_DoNotOmitByClassTest();
+    
+    public OUT_OmitByClassTest b = new OUT_OmitByClassTest();
     
     public String e = new String("e");
 
